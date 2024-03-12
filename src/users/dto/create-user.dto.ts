@@ -30,4 +30,6 @@ export class responseUserDto extends CreateUserDto {
 
   @Exclude()
   confirm_password: string;
+
+  photos: any;
 }

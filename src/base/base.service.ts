@@ -1,10 +1,11 @@
 import { Injectable } from "@nestjs/common";
 import { InjectEntityManager } from "@nestjs/typeorm";
-
-import { EntityManager, EntityTarget, FindManyOptions } from "typeorm";
-import { PaginationDto } from "@/base/dto/pagination.dto";
-import { FindOneOptions } from "typeorm/find-options/FindOneOptions";
+import { EntityManager, EntityTarget, Like } from "typeorm";
+import { responsePagination } from "@/base/dto/pagination.dto";
 import { FindOptionsOrder } from "typeorm/find-options/FindOptionsOrder";
+import { responseUserDto } from "@/users/dto/create-user.dto";
+import { transformDataEnitity } from "@/utils/TransformDataUtils";
+import { SearchDto } from "@/users/dto/search.dto";
 
 @Injectable()
 export class BaseService<Entity> {
@@ -14,15 +15,22 @@ export class BaseService<Entity> {
 
   async FindWithPagination(
     entity: EntityTarget<Entity>,
-    paginationDto: PaginationDto
-  ): Promise<any> {
+    searchDto: SearchDto
+  ): Promise<responsePagination> {
     const options: FindOptionsOrder<any> = {
       email: "ASC",
       createdAt: "DESC",
     };
-    const page = Number(paginationDto.page) || 1;
-    const limit = Number(paginationDto.limit) || 10;
+    const page = Number(searchDto.page) || 1;
+    const limit = Number(searchDto.limit) || 10;
+
     const [entities, count] = await this.entityManager.findAndCount(entity, {
+      where: [
+        {
+          name: Like("%" + searchDto.name + "%"),
+          email: Like("%" + searchDto.email + "%"),
+        },
+      ],
       skip: (page - 1) * limit,
       take: limit || 10,
       order: options,
@@ -33,7 +41,7 @@ export class BaseService<Entity> {
     const prevPage = page - 1 < 1 ? undefined : page - 1;
 
     return {
-      data: entities,
+      data: transformDataEnitity(responseUserDto, entities),
       count,
       lastPage,
       nextPage,

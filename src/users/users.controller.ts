@@ -16,6 +16,7 @@ import { UpdateUserDto } from "./dto/update-user.dto";
 import { AuthGuard } from "@/auth/auth.guard";
 import { transformDataEnitity } from "@/utils/TransformDataUtils";
 import { PaginationDto } from "@/base/dto/pagination.dto";
+import { SearchDto } from "@/users/dto/search.dto";
 
 @Controller("users")
 export class UsersController {
@@ -32,9 +33,9 @@ export class UsersController {
 
   @UseGuards(AuthGuard)
   @Get()
-  findAll(@Query() paginationDto: PaginationDto) {
-    console.log(paginationDto);
-    return this.usersService.findAll(paginationDto);
+  findAll(@Query() searchDto: SearchDto) {
+    console.log(searchDto);
+    return this.usersService.findAll(searchDto);
   }
 
   @Patch(":id")
@@ -50,6 +51,8 @@ export class UsersController {
       await this.usersService.findById(Number(id))
     );
   }
+
+  x;
 
   @UseGuards(AuthGuard)
   @Get("/profile")

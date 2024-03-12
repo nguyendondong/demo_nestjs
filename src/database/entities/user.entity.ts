@@ -2,10 +2,12 @@ import {
   Column,
   CreateDateColumn,
   Entity,
+  OneToMany,
   PrimaryGeneratedColumn,
   Unique,
   UpdateDateColumn,
 } from "typeorm";
+import { Photo } from "@/database/entities/photo.entity";
 
 @Entity({ name: "users" })
 export class User {
@@ -30,4 +32,7 @@ export class User {
 
   @UpdateDateColumn({ type: "timestamptz", default: () => "CURRENT_TIMESTAMP" })
   updatedAt: Date;
+
+  @OneToMany(() => Photo, (photo) => photo.user)
+  photos?: Photo[];
 }

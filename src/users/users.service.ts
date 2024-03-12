@@ -7,7 +7,7 @@ import { ValidationException } from "@/exception/base.exception";
 import { BcryptService } from "@/base/bcrypt.service";
 import { transformDataEnitity } from "@/utils/TransformDataUtils";
 import { BaseService } from "@/base/base.service";
-import { PaginationDto } from "@/base/dto/pagination.dto";
+import { SearchDto } from "@/users/dto/search.dto";
 
 @Injectable()
 export class UsersService extends BaseService<User> {
@@ -36,8 +36,8 @@ export class UsersService extends BaseService<User> {
     }
   }
 
-  async findAll(paginationDto: PaginationDto): Promise<responseUserDto> {
-    const users = await this.FindWithPagination(User, paginationDto);
+  async findAll(searchDto: SearchDto): Promise<responseUserDto> {
+    const users = await this.FindWithPagination(User, searchDto);
     return transformDataEnitity(responseUserDto, users);
   }
 
@@ -50,10 +50,16 @@ export class UsersService extends BaseService<User> {
     return user;
   }
 
+  xx;
+
   async findById(id: number): Promise<User> {
-    const user = await this.entityManager.findOneBy(User, { id });
+    const user = await this.entityManager.findOne(User, {
+      where: { id },
+      relations: ["photos"],
+      cache: true,
+    });
     if (!user) {
-      throw new UnauthorizedException("Email is wrong");
+      throw new UnauthorizedException("User not found");
     }
 
     return user;

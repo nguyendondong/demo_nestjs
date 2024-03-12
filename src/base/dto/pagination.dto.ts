@@ -14,3 +14,11 @@ export class PaginationDto {
   @Min(1)
   limit: number;
 }
+
+export type responsePagination = {
+  data: any;
+  count: number;
+  lastPage: number;
+  nextPage?: number;
+  prevPage?: number;
+};
