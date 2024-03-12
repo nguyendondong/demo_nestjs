@@ -8,11 +8,14 @@ import {
   Delete,
   UseGuards,
   Req,
+  Query,
 } from "@nestjs/common";
 import { UsersService } from "./users.service";
-import { CreateUserDto } from "./dto/create-user.dto";
+import { CreateUserDto, responseUserDto } from "./dto/create-user.dto";
 import { UpdateUserDto } from "./dto/update-user.dto";
 import { AuthGuard } from "@/auth/auth.guard";
+import { transformDataEnitity } from "@/utils/TransformDataUtils";
+import { PaginationDto } from "@/base/dto/pagination.dto";
 
 @Controller("users")
 export class UsersController {
@@ -29,19 +32,23 @@ export class UsersController {
 
   @UseGuards(AuthGuard)
   @Get()
-  findAll() {
-    return this.usersService.findAll();
+  findAll(@Query() paginationDto: PaginationDto) {
+    console.log(paginationDto);
+    return this.usersService.findAll(paginationDto);
   }
 
   @Patch(":id")
-  update(@Param("id") id: string, @Body() updateUserDto: UpdateUserDto) {
-    return this.usersService.update(+id, updateUserDto);
+  update(@Param("id") id: number, @Body() updateUserDto: UpdateUserDto) {
+    return this.usersService.update(id, updateUserDto);
   }
 
   @UseGuards(AuthGuard)
   @Get("/details/:id")
-  findOne(@Param("id") id: number) {
-    return this.usersService.findById(id);
+  async findOne(@Param("id") id: string) {
+    return transformDataEnitity(
+      responseUserDto,
+      await this.usersService.findById(Number(id))
+    );
   }
 
   @UseGuards(AuthGuard)
@@ -52,6 +59,6 @@ export class UsersController {
 
   @Delete(":id")
   remove(@Param("id") id: string) {
-    return this.usersService.remove(+id);
+    // return this.usersService.remove(+id);
   }
 }

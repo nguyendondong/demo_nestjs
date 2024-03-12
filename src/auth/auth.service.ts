@@ -49,14 +49,16 @@ export class AuthService {
   }
 
   private async genateToken(user: User) {
-    const payload = { email: user.email, sub: user.id };
+    const payload = { email: user.email, user_id: user.id };
     const access_token = await this.jwtService.signAsync(payload);
     const refresh_token = await this.jwtService.signAsync(payload, {
       secret: jwtConstants.refreshTokenSecret,
       expiresIn: jwtConstants.expiresIn,
     });
 
-    await this.usersService.update(user.id, { refreshToken: refresh_token });
+    await this.usersService.update(user.id, {
+      refreshToken: refresh_token,
+    });
     const dataUser = transformDataEnitity(responseUserDto, user);
     return {
       user: {

@@ -22,7 +22,7 @@ export class User {
   @Column()
   password: string;
 
-  @Column()
+  @Column({ default: "" })
   refreshToken: string;
 
   @CreateDateColumn({ type: "timestamptz", default: () => "CURRENT_TIMESTAMP" })

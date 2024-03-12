@@ -1,17 +1,36 @@
 import { Injectable } from "@nestjs/common";
 import { InjectEntityManager } from "@nestjs/typeorm";
-import { EntityManager, EntityTarget, FindOneOptions } from "typeorm";
+
+import { EntityManager, EntityTarget } from "typeorm";
+import { PaginationDto } from "@/base/dto/pagination.dto";
 
 @Injectable()
-export class BaseService {
+export class BaseService<Entity> {
   constructor(
-    @InjectEntityManager() private readonly entityManager: EntityManager
+    @InjectEntityManager() protected readonly entityManager: EntityManager
   ) {}
 
-  async findOne<T>(
-    entity: EntityTarget<T>,
-    options: FindOneOptions<T>
-  ): Promise<T> {
-    return this.entityManager.findOne(entity, options);
+  async FindWithPagination(
+    entity: EntityTarget<Entity>,
+    paginationDto: PaginationDto
+  ): Promise<any> {
+    const page = Number(paginationDto.page) || 1;
+    const limit = Number(paginationDto.limit) || 10;
+    const [entities, count] = await this.entityManager.findAndCount(entity, {
+      skip: (page - 1) * limit,
+      take: limit || 10,
+    });
+
+    const lastPage = Math.ceil(count / limit);
+    const nextPage = page + 1 > lastPage ? undefined : page + 1;
+    const prevPage = page - 1 < 1 ? undefined : page - 1;
+
+    return {
+      data: entities,
+      count,
+      lastPage,
+      nextPage,
+      prevPage,
+    };
   }
 }

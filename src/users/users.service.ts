@@ -1,30 +1,34 @@
 import { Injectable, UnauthorizedException } from "@nestjs/common";
 import { UpdateUserDto } from "./dto/update-user.dto";
-import { InjectRepository } from "@nestjs/typeorm";
 import { User } from "@/database/entities/user.entity";
-import { Repository } from "typeorm";
+import { EntityManager } from "typeorm";
 import { CreateUserDto, responseUserDto } from "@/users/dto/create-user.dto";
 import { ValidationException } from "@/exception/base.exception";
 import { BcryptService } from "@/base/bcrypt.service";
 import { transformDataEnitity } from "@/utils/TransformDataUtils";
+import { BaseService } from "@/base/base.service";
+import { PaginationDto } from "@/base/dto/pagination.dto";
 
 @Injectable()
-export class UsersService {
+export class UsersService extends BaseService<User> {
   constructor(
-    @InjectRepository(User)
-    private userRepository: Repository<User>,
-    private bycryptService: BcryptService
-  ) {}
+    protected readonly entityManager: EntityManager,
+    private readonly bcryptService: BcryptService
+  ) {
+    super(entityManager);
+  }
 
   async create(createUserDto: CreateUserDto): Promise<responseUserDto> {
     try {
-      const hashPassword = await this.bycryptService.hash(
+      const hashPassword = await this.bcryptService.hash(
         createUserDto.password
       );
-      const user = await this.userRepository.save({
+      const userData = this.entityManager.create(User, {
         ...createUserDto,
         password: hashPassword,
       });
+
+      const user = await this.entityManager.save(User, userData);
 
       return transformDataEnitity(responseUserDto, user);
     } catch (error) {
@@ -32,18 +36,13 @@ export class UsersService {
     }
   }
 
-  async findAll(): Promise<responseUserDto> {
-    const users = await this.userRepository.find({
-      order: {
-        id: "DESC",
-        name: "ASC",
-      },
-    });
+  async findAll(paginationDto: PaginationDto): Promise<responseUserDto> {
+    const users = await this.FindWithPagination(User, paginationDto);
     return transformDataEnitity(responseUserDto, users);
   }
 
   async findByEmail(email: string) {
-    const user = await this.userRepository.findOneBy({ email });
+    const user = await this.entityManager.findOneBy(User, { email });
     if (!user) {
       throw new UnauthorizedException("Email is wrong");
     }
@@ -51,23 +50,23 @@ export class UsersService {
     return user;
   }
 
-  async findById(id: number): Promise<responseUserDto> {
-    const user = await this.userRepository.findOneBy({ id });
+  async findById(id: number): Promise<User> {
+    const user = await this.entityManager.findOneBy(User, { id });
     if (!user) {
-      throw new Error("User not found");
+      throw new UnauthorizedException("Email is wrong");
     }
 
-    return transformDataEnitity(responseUserDto, user);
+    return user;
   }
 
   async update(
     id: number,
     updateUserDto: UpdateUserDto | Partial<UpdateUserDto>
   ) {
-    return this.userRepository.update(id, updateUserDto);
+    return this.entityManager.update(User, id, updateUserDto);
   }
 
   async remove(id: number) {
-    return await this.userRepository.delete(id);
+    return await this.entityManager.delete(User, id);
   }
 }

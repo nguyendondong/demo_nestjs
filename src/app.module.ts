@@ -6,6 +6,8 @@ import { dataOptions } from "./database/data-source";
 import { AuthModule } from "./auth/auth.module";
 import { BaseService } from "./base/base.service";
 import { JwtService } from "@nestjs/jwt";
+import { UsersService } from "@/users/users.service";
+import { BcryptService } from "@/base/bcrypt.service";
 
 @Module({
   imports: [
@@ -18,6 +20,6 @@ import { JwtService } from "@nestjs/jwt";
     AuthModule,
   ],
   controllers: [],
-  providers: [BaseService, JwtService],
+  providers: [BaseService, BcryptService, JwtService, UsersService],
 })
 export class AppModule {}
