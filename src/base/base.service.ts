@@ -23,12 +23,14 @@ export class BaseService<Entity> {
     };
     const page = Number(searchDto.page) || 1;
     const limit = Number(searchDto.limit) || 10;
+    const name = searchDto.name || "";
+    const email = searchDto.email || "";
 
     const [entities, count] = await this.entityManager.findAndCount(entity, {
       where: [
         {
-          name: Like("%" + searchDto.name + "%"),
-          email: Like("%" + searchDto.email + "%"),
+          name: Like("%" + name + "%"),
+          email: Like("%" + email + "%"),
         },
       ],
       skip: (page - 1) * limit,

@@ -1,7 +1,6 @@
 import {
   Controller,
   Get,
-  Post,
   Body,
   Patch,
   Param,
@@ -9,26 +8,25 @@ import {
   UseGuards,
   Req,
   Query,
+  Post,
 } from "@nestjs/common";
 import { UsersService } from "./users.service";
-import { CreateUserDto, responseUserDto } from "./dto/create-user.dto";
 import { UpdateUserDto } from "./dto/update-user.dto";
 import { AuthGuard } from "@/auth/auth.guard";
 import { transformDataEnitity } from "@/utils/TransformDataUtils";
-import { PaginationDto } from "@/base/dto/pagination.dto";
 import { SearchDto } from "@/users/dto/search.dto";
+import { CreateUserDto, responseUserDto } from "@/users/dto/create-user.dto";
+import { ApiBearerAuth, ApiTags } from "@nestjs/swagger";
 
+@ApiBearerAuth()
+@ApiTags("Users")
 @Controller("users")
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
-  @Post()
-  async create(@Body() createUserDto: CreateUserDto) {
-    try {
-      await this.usersService.create(createUserDto);
-    } catch (error) {
-      console.log(error);
-    }
+  @Post("/register")
+  register(@Body() createUserDto: CreateUserDto): Promise<responseUserDto> {
+    return this.usersService.create(createUserDto);
   }
 
   @UseGuards(AuthGuard)

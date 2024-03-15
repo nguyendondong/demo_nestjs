@@ -4,11 +4,11 @@ import { ConfigModule } from "@nestjs/config";
 import { UsersModule } from "./users/users.module";
 import { dataOptions } from "./database/data-source";
 import { AuthModule } from "./auth/auth.module";
-import { BaseService } from "./base/base.service";
 import { JwtService } from "@nestjs/jwt";
 import { UsersService } from "@/users/users.service";
 import { BcryptService } from "@/base/bcrypt.service";
-import { PhotoModule } from './photo/photo.module';
+import { BlobModule } from "@/blob/blob.module";
+import { BlobService } from "@/blob/blob.service";
 
 @Module({
   imports: [
@@ -19,9 +19,9 @@ import { PhotoModule } from './photo/photo.module';
     TypeOrmModule.forRoot(dataOptions),
     UsersModule,
     AuthModule,
-    PhotoModule,
+    BlobModule,
   ],
   controllers: [],
-  providers: [BaseService, BcryptService, JwtService, UsersService],
+  providers: [JwtService, UsersService, BcryptService, BlobService],
 })
 export class AppModule {}

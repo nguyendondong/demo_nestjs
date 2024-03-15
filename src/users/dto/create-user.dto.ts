@@ -1,35 +1,44 @@
 import { IsEmail, IsNotEmpty, IsString, Length } from "class-validator";
-import { Exclude } from "class-transformer";
+import { Exclude, Expose } from "class-transformer";
+import { ApiProperty } from "@nestjs/swagger";
 
 export class CreateUserDto {
+  @ApiProperty()
   @IsNotEmpty()
   @IsEmail()
   email: string;
 
+  @ApiProperty()
   @IsNotEmpty()
   @IsString()
   @Length(8, 20)
   password: string;
 
+  @ApiProperty()
   @IsNotEmpty()
   @IsString()
   @Length(8, 20)
   confirm_password: string;
 
+  @ApiProperty()
   @IsNotEmpty()
   @IsString()
   name: string;
 }
 
-export class responseUserDto extends CreateUserDto {
-  @Exclude()
-  refreshToken: string;
+@Exclude()
+export class responseUserDto {
+  @Expose()
+  @ApiProperty()
+  id: number;
 
-  @Exclude()
-  password: string;
+  @Expose()
+  @ApiProperty()
+  @IsString()
+  name: string;
 
-  @Exclude()
-  confirm_password: string;
-
-  photos: any;
+  @Expose()
+  @ApiProperty()
+  @IsEmail()
+  email: string;
 }

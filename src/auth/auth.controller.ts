@@ -1,9 +1,11 @@
 import { Body, Controller, Post } from "@nestjs/common";
-import { CreateUserDto, responseUserDto } from "@/users/dto/create-user.dto";
 import { UsersService } from "@/users/users.service";
-import { LoginUserDto } from "@/auth/dto/login-user-dto";
+import { LoginUserDto, responseLoginUserDto } from "@/auth/dto/login-user-dto";
 import { AuthService } from "@/auth/auth.service";
+import { ApiResponse, ApiTags } from "@nestjs/swagger";
+import { unauthorizedResponse } from "@/swaggers/apiResponse.schemas";
 
+@ApiTags("Auth")
 @Controller("auth")
 export class AuthController {
   constructor(
@@ -11,12 +13,9 @@ export class AuthController {
     private readonly authService: AuthService
   ) {}
 
-  @Post("/register")
-  register(@Body() createUserDto: CreateUserDto): Promise<responseUserDto> {
-    return this.usersService.create(createUserDto);
-  }
-
   @Post("/login")
+  @ApiResponse({ status: 200, description: "OK", type: responseLoginUserDto })
+  @ApiResponse(unauthorizedResponse)
   async login(@Body() loginUserDto: LoginUserDto) {
     return await this.authService.login(loginUserDto);
   }

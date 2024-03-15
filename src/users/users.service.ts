@@ -55,7 +55,7 @@ export class UsersService extends BaseService<User> {
   async findById(id: number): Promise<User> {
     const user = await this.entityManager.findOne(User, {
       where: { id },
-      relations: ["photos"],
+      relations: ["blobs"],
       cache: true,
     });
     if (!user) {

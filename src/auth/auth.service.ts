@@ -4,7 +4,7 @@ import {
   UnauthorizedException,
 } from "@nestjs/common";
 import { UsersService } from "@/users/users.service";
-import { LoginUserDto } from "@/auth/dto/login-user-dto";
+import { LoginUserDto, responseLoginUserDto } from "@/auth/dto/login-user-dto";
 import { JwtService } from "@nestjs/jwt";
 import { BcryptService } from "@/base/bcrypt.service";
 import { jwtConstants } from "@/auth/constants";
@@ -48,7 +48,7 @@ export class AuthService {
     }
   }
 
-  private async genateToken(user: User) {
+  private async genateToken(user: User): Promise<responseLoginUserDto> {
     const payload = { email: user.email, user_id: user.id };
     const access_token = await this.jwtService.signAsync(payload);
     const refresh_token = await this.jwtService.signAsync(payload, {
@@ -61,10 +61,9 @@ export class AuthService {
     });
     const dataUser = transformDataEnitity(responseUserDto, user);
     return {
-      user: {
-        access_token,
-        dataUser,
-      },
+      access_token,
+      refresh_token,
+      dataUser,
     };
   }
 }

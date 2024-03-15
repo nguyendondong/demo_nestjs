@@ -2,30 +2,26 @@ import {
   Column,
   CreateDateColumn,
   Entity,
-  OneToMany,
+  JoinColumn,
+  ManyToOne,
   PrimaryGeneratedColumn,
-  Unique,
   UpdateDateColumn,
 } from "typeorm";
-import { Blob } from "@/database/entities/blob.entity";
+import { User } from "@/database/entities/user.entity";
 
-@Entity({ name: "users" })
-export class User {
+@Entity({ name: "blobs" })
+export class Blob {
   @PrimaryGeneratedColumn()
   id: number;
 
   @Column()
-  name: string;
-
-  @Unique(["email"])
-  @Column()
-  email: string;
+  fileName: string;
 
   @Column()
-  password: string;
+  BlobType: string;
 
-  @Column({ default: "" })
-  refreshToken: string;
+  @Column()
+  url: string;
 
   @CreateDateColumn({ type: "timestamptz", default: () => "CURRENT_TIMESTAMP" })
   createdAt: Date;
@@ -33,6 +29,7 @@ export class User {
   @UpdateDateColumn({ type: "timestamptz", default: () => "CURRENT_TIMESTAMP" })
   updatedAt: Date;
 
-  @OneToMany(() => Blob, (blob) => blob.user)
-  public blobs?: Blob[];
+  @ManyToOne(() => User, (user) => user.blobs)
+  @JoinColumn({ name: "userId" })
+  user?: User;
 }
