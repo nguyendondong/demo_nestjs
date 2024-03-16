@@ -9,7 +9,7 @@ dependencies:
     specifier: ^3.529.1
     version: 3.534.0
   '@aws-sdk/s3-request-presigner':
-    specifier: ^3.529.1
+    specifier: ^3.534.0
     version: 3.534.0
   '@nestjs/common':
     specifier: ^10.0.0

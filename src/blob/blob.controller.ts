@@ -8,10 +8,6 @@ import {
   Delete,
   UseInterceptors,
   UploadedFile,
-  ParseFilePipe,
-  MaxFileSizeValidator,
-  FileTypeValidator,
-  Req,
   UseGuards,
   BadRequestException,
 } from "@nestjs/common";
@@ -47,13 +43,12 @@ export class BlobController {
   )
   async uploadFile(
     @UploadedFile()
-    file: Express.Multer.File,
-    @Req() req: Request
+    file: Express.Multer.File
   ) {
     if (!file) {
       throw new BadRequestException("File not found");
     }
-    return await this.blobService.uploadFile(file, file.buffer, req);
+    return await this.blobService.uploadFile(file);
   }
 
   @Get()

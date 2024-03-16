@@ -7,6 +7,7 @@ import { User } from "@/database/entities/user.entity";
 import { BcryptService } from "@/base/bcrypt.service";
 import { JwtModule } from "@nestjs/jwt";
 import { jwtConstants } from "@/auth/constants";
+import { BlobService } from "@/blob/blob.service";
 
 @Module({
   imports: [
@@ -18,6 +19,6 @@ import { jwtConstants } from "@/auth/constants";
     }),
   ],
   controllers: [AuthController],
-  providers: [AuthService, BcryptService, UsersService],
+  providers: [AuthService, BcryptService, UsersService, BlobService],
 })
 export class AuthModule {}

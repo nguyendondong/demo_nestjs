@@ -22,6 +22,6 @@ import { BlobService } from "@/blob/blob.service";
     BlobModule,
   ],
   controllers: [],
-  providers: [JwtService, UsersService, BcryptService, BlobService],
+  providers: [JwtService, UsersService, BlobService, BcryptService],
 })
 export class AppModule {}

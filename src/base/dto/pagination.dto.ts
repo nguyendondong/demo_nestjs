@@ -15,10 +15,10 @@ export class PaginationDto {
   limit: number;
 }
 
-export type responsePagination = {
+export class responsePagination {
   data: any;
   count: number;
   lastPage: number;
   nextPage?: number;
   prevPage?: number;
-};
+}

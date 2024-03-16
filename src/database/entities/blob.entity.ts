@@ -3,13 +3,13 @@ import {
   CreateDateColumn,
   Entity,
   JoinColumn,
-  ManyToOne,
+  OneToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from "typeorm";
 import { User } from "@/database/entities/user.entity";
 
-@Entity({ name: "blobs" })
+@Entity({ name: "Blob" })
 export class Blob {
   @PrimaryGeneratedColumn()
   id: number;
@@ -17,8 +17,14 @@ export class Blob {
   @Column()
   fileName: string;
 
+  @Column({ name: "relation_id" })
+  relationId: number;
+
+  @Column({ nullable: true })
+  fieldName: string;
+
   @Column()
-  BlobType: string;
+  relationType: string;
 
   @Column()
   url: string;
@@ -28,8 +34,4 @@ export class Blob {
 
   @UpdateDateColumn({ type: "timestamptz", default: () => "CURRENT_TIMESTAMP" })
   updatedAt: Date;
-
-  @ManyToOne(() => User, (user) => user.blobs)
-  @JoinColumn({ name: "userId" })
-  user?: User;
 }

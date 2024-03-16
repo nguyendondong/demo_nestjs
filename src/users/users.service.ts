@@ -8,11 +8,14 @@ import { BcryptService } from "@/base/bcrypt.service";
 import { transformDataEnitity } from "@/utils/TransformDataUtils";
 import { BaseService } from "@/base/base.service";
 import { SearchDto } from "@/users/dto/search.dto";
+import { responsePagination } from "@/base/dto/pagination.dto";
+import { BlobService } from "@/blob/blob.service";
 
 @Injectable()
 export class UsersService extends BaseService<User> {
   constructor(
     protected readonly entityManager: EntityManager,
+    private readonly blobService: BlobService,
     private readonly bcryptService: BcryptService
   ) {
     super(entityManager);
@@ -36,9 +39,10 @@ export class UsersService extends BaseService<User> {
     }
   }
 
-  async findAll(searchDto: SearchDto): Promise<responseUserDto> {
+  async findAll(searchDto: SearchDto): Promise<responsePagination> {
     const users = await this.FindWithPagination(User, searchDto);
-    return transformDataEnitity(responseUserDto, users);
+
+    return transformDataEnitity(responsePagination, users);
   }
 
   async findByEmail(email: string) {
@@ -54,22 +58,33 @@ export class UsersService extends BaseService<User> {
 
   async findById(id: number): Promise<User> {
     const user = await this.entityManager.findOne(User, {
-      where: { id },
-      relations: ["blobs"],
-      cache: true,
+      where: {
+        id,
+      },
+      relations: ["blob"],
+      select: ["id", "blob"],
     });
     if (!user) {
       throw new UnauthorizedException("User not found");
     }
-
+    console.log(user);
     return user;
   }
 
   async update(
     id: number,
-    updateUserDto: UpdateUserDto | Partial<UpdateUserDto>
+    updateUserDto: UpdateUserDto | any,
+    file?: Express.Multer.File
   ) {
-    return this.entityManager.update(User, id, updateUserDto);
+    if (file && (await this.blobService.uploadFile(file))) {
+      await this.blobService.create(file, {
+        relationId: id,
+        relationType: "user",
+      });
+    }
+    await this.entityManager.update(User, id, { ...updateUserDto });
+
+    return true;
   }
 
   async remove(id: number) {
