@@ -1,13 +1,4 @@
-import {
-  Column,
-  CreateDateColumn,
-  Entity,
-  JoinColumn,
-  OneToOne,
-  PrimaryGeneratedColumn,
-  UpdateDateColumn,
-} from "typeorm";
-import { User } from "@/database/entities/user.entity";
+import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
 
 @Entity({ name: "Blob" })
 export class Blob {
@@ -15,23 +6,11 @@ export class Blob {
   id: number;
 
   @Column()
-  fileName: string;
-
-  @Column({ name: "relation_id" })
-  relationId: number;
-
-  @Column({ nullable: true })
-  fieldName: string;
+  fileType: string;
 
   @Column()
-  relationType: string;
+  fileName: string;
 
   @Column()
   url: string;
-
-  @CreateDateColumn({ type: "timestamptz", default: () => "CURRENT_TIMESTAMP" })
-  createdAt: Date;
-
-  @UpdateDateColumn({ type: "timestamptz", default: () => "CURRENT_TIMESTAMP" })
-  updatedAt: Date;
 }

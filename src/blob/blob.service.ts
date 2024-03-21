@@ -1,46 +1,41 @@
 import "dotenv/config";
 import { BadRequestException, Injectable } from "@nestjs/common";
 import { UpdateBlobDto } from "./dto/update-blob.dto";
-import { PutObjectCommand, S3Client } from "@aws-sdk/client-s3";
+import { PutObjectCommand } from "@aws-sdk/client-s3";
 import { EntityManager } from "typeorm";
 import { Blob } from "@/database/entities/blob.entity";
+import { s3Client } from "@/base/S3Client";
 
 @Injectable()
 export class BlobService {
   constructor(protected readonly entityManager: EntityManager) {}
 
-  s3Client = new S3Client({
-    region: process.env.AWS_S3_REGION,
-    credentials: {
-      accessKeyId: process.env.AWS_ACCESS_KEY_ID,
-      secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
-    },
-  });
-
   async uploadFile(file: Express.Multer.File): Promise<boolean> {
     try {
-      await this.s3Client.send(
+      await s3Client.send(
         new PutObjectCommand({
           Bucket: process.env.AWS_S3_BUCKET,
-          Key: `${file.destination}/${file.fieldname}/${file.originalname}`,
+          Key: `uploads/${file.fieldname}/${file.originalname}`,
           Body: file.buffer,
         })
       );
+
       return true;
     } catch (error) {
-      throw new BadRequestException("Upload file to S3 failed");
+      throw new BadRequestException(`Upload file to S3 failed, ${error}`);
     }
   }
 
-  async create(file: Express.Multer.File, options: any) {
+  async create(file: Express.Multer.File) {
+    const url = file.path
+      ? `uploads/csv/${file.filename}`
+      : `uploads/${file.fieldname}/${file.originalname}`;
     try {
-      const { relationType, relationId } = options;
       const blob = this.entityManager.create(Blob, {
         fileName: file.originalname,
-        relationType: relationType,
-        relationId: relationId,
+        fileType: file.mimetype,
         fieldName: file.fieldname,
-        url: `${file.destination}/${file.fieldname}/${file.originalname}`,
+        url: url,
       });
 
       return await this.entityManager.save(Blob, blob);

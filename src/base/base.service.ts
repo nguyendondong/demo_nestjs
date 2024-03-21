@@ -1,20 +1,21 @@
 import { Injectable } from "@nestjs/common";
 import { InjectEntityManager } from "@nestjs/typeorm";
-import { EntityManager, EntityTarget, Like } from "typeorm";
+import { DeepPartial, EntityManager, EntityTarget, Like } from "typeorm";
 import { responsePagination } from "@/base/dto/pagination.dto";
 import { FindOptionsOrder } from "typeorm/find-options/FindOptionsOrder";
-import { responseUserDto } from "@/users/dto/create-user.dto";
-import { transformDataEnitity } from "@/utils/TransformDataUtils";
+import { ResponseUserDto } from "@/users/dto/create-user.dto";
+import Helpers from "@/utils/TransformDataUtils";
 import { SearchDto } from "@/users/dto/search.dto";
+import { QueryDeepPartialEntity } from "typeorm/query-builder/QueryPartialEntity";
 
 @Injectable()
-export class BaseService<Entity> {
+export class BaseService {
   constructor(
     @InjectEntityManager() protected readonly entityManager: EntityManager
   ) {}
 
-  async FindWithPagination(
-    entity: EntityTarget<Entity>,
+  async FindWithPagination<Entity>(
+    entity: { new (): Entity },
     searchDto: SearchDto
   ): Promise<responsePagination> {
     const options: FindOptionsOrder<any> = {
@@ -43,11 +44,25 @@ export class BaseService<Entity> {
     const prevPage = page - 1 < 1 ? undefined : page - 1;
 
     return {
-      data: transformDataEnitity(responseUserDto, entities),
+      data: Helpers.transformDataEnitity(ResponseUserDto, entities),
       count,
       lastPage,
       nextPage,
       prevPage,
     };
+  }
+
+  async createMultiple<Entity>(
+    entity: EntityTarget<Entity>,
+    entities: QueryDeepPartialEntity<Entity>[]
+  ) {
+    await this.entityManager.upsert(entity, entities, {
+      conflictPaths: ["email"],
+      skipUpdateIfNoValuesChanged: true,
+    });
+
+    // await this.entityManager.save(entity, dataEntity);
+
+    return true;
   }
 }

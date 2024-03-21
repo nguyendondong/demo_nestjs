@@ -3,30 +3,27 @@ import {
   CreateDateColumn,
   Entity,
   JoinColumn,
-  OneToMany,
+  ManyToOne,
+  OneToOne,
   PrimaryGeneratedColumn,
-  Unique,
   UpdateDateColumn,
 } from "typeorm";
-import { Attachment } from "@/database/entities/attachment.entity";
+import { User } from "@/database/entities/user.entity";
+import { Blob } from "@/database/entities/blob.entity";
 
-@Entity({ name: "User" })
-export class User {
+@Entity({ name: "Attachment" })
+export class Attachment {
   @PrimaryGeneratedColumn()
   id: number;
 
   @Column()
-  name: string;
-
-  @Unique(["email"])
-  @Column()
-  email: string;
+  fieldName: string;
 
   @Column()
-  password: string;
+  relationId: number;
 
-  @Column({ default: "" })
-  refreshToken: string;
+  @Column()
+  relationType: string;
 
   @CreateDateColumn({ type: "timestamptz", default: () => "CURRENT_TIMESTAMP" })
   createdAt: Date;
@@ -34,9 +31,11 @@ export class User {
   @UpdateDateColumn({ type: "timestamptz", default: () => "CURRENT_TIMESTAMP" })
   updatedAt: Date;
 
-  @OneToMany(() => Attachment, (attachment) => attachment.user, {
-    eager: false,
-  })
+  @ManyToOne(() => User, (user) => user.attachments)
   @JoinColumn({ name: "relationId" })
-  attachments?: Attachment[];
+  user?: User;
+
+  @OneToOne(() => Blob)
+  @JoinColumn()
+  blob?: Blob;
 }

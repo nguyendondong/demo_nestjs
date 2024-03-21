@@ -1,6 +1,6 @@
 import { IsEmail, IsNotEmpty, IsString } from "class-validator";
 import { ApiProperty } from "@nestjs/swagger";
-import { responseUserDto } from "@/users/dto/create-user.dto";
+import { ResponseUserDto } from "@/users/dto/create-user.dto";
 
 export class LoginUserDto {
   @ApiProperty()
@@ -22,5 +22,5 @@ export class responseLoginUserDto {
   refresh_token: string;
 
   @ApiProperty()
-  dataUser: responseUserDto;
+  dataUser: ResponseUserDto;
 }

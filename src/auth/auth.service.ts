@@ -8,8 +8,8 @@ import { LoginUserDto, responseLoginUserDto } from "@/auth/dto/login-user-dto";
 import { JwtService } from "@nestjs/jwt";
 import { BcryptService } from "@/base/bcrypt.service";
 import { jwtConstants } from "@/auth/constants";
-import { transformDataEnitity } from "@/utils/TransformDataUtils";
-import { responseUserDto } from "@/users/dto/create-user.dto";
+import Helpers from "@/utils/TransformDataUtils";
+import { ResponseUserDto } from "@/users/dto/create-user.dto";
 import { User } from "@/database/entities/user.entity";
 
 @Injectable()
@@ -59,7 +59,7 @@ export class AuthService {
     await this.usersService.update(user.id, {
       refreshToken: refresh_token,
     });
-    const dataUser = transformDataEnitity(responseUserDto, user);
+    const dataUser = Helpers.transformDataEnitity(ResponseUserDto, user);
     return {
       access_token,
       refresh_token,

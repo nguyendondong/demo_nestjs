@@ -1,4 +1,3 @@
-import { IsString } from "class-validator";
 import { Exclude } from "class-transformer";
 import { Optional } from "@nestjs/common";
 import { ApiProperty } from "@nestjs/swagger";

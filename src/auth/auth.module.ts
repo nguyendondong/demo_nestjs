@@ -8,6 +8,7 @@ import { BcryptService } from "@/base/bcrypt.service";
 import { JwtModule } from "@nestjs/jwt";
 import { jwtConstants } from "@/auth/constants";
 import { BlobService } from "@/blob/blob.service";
+import { CsvService } from "@/base/csv.service";
 
 @Module({
   imports: [
@@ -19,6 +20,12 @@ import { BlobService } from "@/blob/blob.service";
     }),
   ],
   controllers: [AuthController],
-  providers: [AuthService, BcryptService, UsersService, BlobService],
+  providers: [
+    AuthService,
+    BcryptService,
+    UsersService,
+    CsvService,
+    BlobService,
+  ],
 })
 export class AuthModule {}

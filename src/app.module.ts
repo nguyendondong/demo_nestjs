@@ -9,6 +9,8 @@ import { UsersService } from "@/users/users.service";
 import { BcryptService } from "@/base/bcrypt.service";
 import { BlobModule } from "@/blob/blob.module";
 import { BlobService } from "@/blob/blob.service";
+import { ScheduleModule } from "@nestjs/schedule";
+import { CsvService } from "@/base/csv.service";
 
 @Module({
   imports: [
@@ -17,11 +19,12 @@ import { BlobService } from "@/blob/blob.service";
       isGlobal: true,
     }),
     TypeOrmModule.forRoot(dataOptions),
+    ScheduleModule.forRoot(),
     UsersModule,
     AuthModule,
     BlobModule,
   ],
   controllers: [],
-  providers: [JwtService, UsersService, BlobService, BcryptService],
+  providers: [JwtService, UsersService, BlobService, CsvService, BcryptService],
 })
 export class AppModule {}
