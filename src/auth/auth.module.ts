@@ -9,6 +9,7 @@ import { JwtModule } from "@nestjs/jwt";
 import { jwtConstants } from "@/auth/constants";
 import { BlobService } from "@/blob/blob.service";
 import { CsvService } from "@/base/csv.service";
+import { MailService } from "@/mail/mail.service";
 
 @Module({
   imports: [
@@ -25,6 +26,7 @@ import { CsvService } from "@/base/csv.service";
     BcryptService,
     UsersService,
     CsvService,
+    MailService,
     BlobService,
   ],
 })

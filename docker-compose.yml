@@ -7,12 +7,30 @@ services:
       - postgres_data:/var/lib/postgresql/data
       - .:/myapp
     environment:
-      - POSTGRES_PASSWORD=password
+      POSTGRES_USER: ${DATABASE_USERNAME}
+      POSTGRES_PASSWORD: ${DATABASE_PASSWORD}
+      POSTGRES_DB: ${DATABASE_NAME}
+
     expose:
-      - "5432"
+      - 5432
     ports:
       - 5432:5432
     restart: always
+    networks:
+      - demo-nestjs-network
+
+  mailcatcher:
+    restart: on-failure:10
+    image: dockage/mailcatcher:0.9.0
+    ports:
+      - "1080:1080"
+      - "1025:1025"
+    networks:
+      - demo-nestjs-network
+
+networks:
+  demo-nestjs-network:
+
 
 volumes:
   postgres_data:

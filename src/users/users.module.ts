@@ -7,6 +7,7 @@ import { BcryptService } from "@/base/bcrypt.service";
 import { BaseService } from "@/base/base.service";
 import { BlobService } from "@/blob/blob.service";
 import { CsvService } from "@/base/csv.service";
+import { MailService } from "@/mail/mail.service";
 
 @Module({
   imports: [TypeOrmModule.forFeature([User])],
@@ -16,6 +17,7 @@ import { CsvService } from "@/base/csv.service";
     BcryptService,
     BlobService,
     CsvService,
+    MailService,
     BaseService,
   ],
 })

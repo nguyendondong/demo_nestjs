@@ -13,6 +13,7 @@ import { BlobService } from "@/blob/blob.service";
 import { Attachment } from "@/database/entities/attachment.entity";
 import { Cron, CronExpression } from "@nestjs/schedule";
 import { CsvService } from "@/base/csv.service";
+import { MailService } from "@/mail/mail.service";
 
 @Injectable()
 export class UsersService extends BaseService {
@@ -22,7 +23,8 @@ export class UsersService extends BaseService {
     protected readonly entityManager: EntityManager,
     private readonly blobService: BlobService,
     private readonly bcryptService: BcryptService,
-    private readonly csvService: CsvService
+    private readonly csvService: CsvService,
+    private readonly mailService: MailService
   ) {
     super(entityManager);
   }
@@ -38,6 +40,7 @@ export class UsersService extends BaseService {
       });
 
       const user = await this.entityManager.save(User, userData);
+      await this.mailService.sendUserConfirmation(user, "token");
 
       return Helpers.transformDataEnitity(ResponseUserDto, user);
     } catch (error) {
@@ -115,11 +118,11 @@ export class UsersService extends BaseService {
 
   async transformPasswordAndCreate(data: any[], header: string[]) {
     const res = await Promise.all(
-      data.map(async (row) => {
+      data.map((row) => {
         return {
           [header[0]]: row[0],
           [header[1]]: row[1],
-          [header[2]]: await this.bcryptService.hash(row[2]),
+          [header[2]]: this.bcryptService.hash(row[2]),
         };
       })
     );

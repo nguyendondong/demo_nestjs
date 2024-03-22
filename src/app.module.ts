@@ -11,6 +11,7 @@ import { BlobModule } from "@/blob/blob.module";
 import { BlobService } from "@/blob/blob.service";
 import { ScheduleModule } from "@nestjs/schedule";
 import { CsvService } from "@/base/csv.service";
+import { MailModule } from "./mail/mail.module";
 
 @Module({
   imports: [
@@ -23,6 +24,7 @@ import { CsvService } from "@/base/csv.service";
     UsersModule,
     AuthModule,
     BlobModule,
+    MailModule,
   ],
   controllers: [],
   providers: [JwtService, UsersService, BlobService, CsvService, BcryptService],
