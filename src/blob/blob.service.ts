@@ -52,7 +52,7 @@ export class BlobService {
   }
 
   update(id: number, updateBlobDto: UpdateBlobDto) {
-    return `This action updates a #${id} Blob`;
+    return `This action updates a #${id} Blob with name ${updateBlobDto}`;
   }
 
   remove(id: number) {

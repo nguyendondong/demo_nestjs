@@ -11,7 +11,6 @@ import { SearchDto } from "@/users/dto/search.dto";
 import { responsePagination } from "@/base/dto/pagination.dto";
 import { BlobService } from "@/blob/blob.service";
 import { Attachment } from "@/database/entities/attachment.entity";
-import { CsvService } from "@/csv/csv.service";
 import { MailService } from "@/mail/mail.service";
 
 @Injectable()

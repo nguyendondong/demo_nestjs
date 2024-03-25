@@ -22,35 +22,34 @@ import { ApiTags } from "@nestjs/swagger";
 export class BlobController {
   constructor(private readonly blobService: BlobService) {}
 
-  // @UseGuards(AuthGuard)
-  // @Post("upload")
-  // @UseInterceptors(
-  //   FileInterceptor("images", {
-  //     dest: "uploads",
-  //     limits: {
-  //       fileSize: 1024 * 1024 * 5,
-  //     },
-  //     fileFilter: (req, file, cb) => {
-  //       const ext = file.originalname.split(".").pop();
-  //       const allowedMimes = ["jpeg", "pjpeg", "png", "jpg"];
-  //       if (!allowedMimes.includes(ext)) {
-  //         req.fileValidationError = "Only image files are allowed!";
-  //         cb(new BadRequestException("Only image files are allowed!"), false);
-  //       }
-  //       cb(null, true);
-  //     },
-  //   })
-  // )
-  // async uploadFile(
-  //   @UploadedFile()
-  //   file: Express.Multer.File
-  // ) {
-  //   if (!file) {
-  //     throw new BadRequestException("File not found");
-  //   }
-  //   console.log("file.buffer", file.buffer);
-  //   return await this.blobService.uploadFile(file, file.buffer);
-  // }
+  @UseGuards(AuthGuard)
+  @Post("upload")
+  @UseInterceptors(
+    FileInterceptor("images", {
+      dest: "uploads",
+      limits: {
+        fileSize: 1024 * 1024 * 5,
+      },
+      fileFilter: (req, file, cb) => {
+        const ext = file.originalname.split(".").pop();
+        const allowedMimes = ["jpeg", "pjpeg", "png", "jpg"];
+        if (!allowedMimes.includes(ext)) {
+          req.fileValidationError = "Only image files are allowed!";
+          cb(new BadRequestException("Only image files are allowed!"), false);
+        }
+        cb(null, true);
+      },
+    })
+  )
+  async uploadFile(
+    @UploadedFile()
+    file: Express.Multer.File
+  ) {
+    if (!file) {
+      throw new BadRequestException("File not found");
+    }
+    return await this.blobService.uploadFile(file);
+  }
 
   @Get()
   findAll() {
