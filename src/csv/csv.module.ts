@@ -5,18 +5,13 @@ import { QueuesName } from "@/worker/queues";
 import { BaseService } from "@/base/base.service";
 import { BlobService } from "@/blob/blob.service";
 import { BcryptService } from "@/base/bcrypt.service";
-import { createUserByCsvProcessor } from "@/worker/createUserByCsv.processor";
+import { createUserByCsvProcessor } from "@/worker/processor/createUserByCsv.processor";
 
 @Module({
   imports: [
-    BullModule.registerQueue(
-      {
-        name: QueuesName.createUserByCsv,
-      },
-      {
-        name: QueuesName.email,
-      }
-    ),
+    BullModule.registerQueue({
+      name: QueuesName.createUserByCsv,
+    }),
   ],
   controllers: [],
   providers: [

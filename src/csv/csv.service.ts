@@ -81,9 +81,9 @@ export class CsvService extends BaseService {
     return true;
   }
 
-  async CronJobcreaUserByCsv(name: string, file: Express.Multer.File) {
+  CronJobcreaUserByCsv(name: string, file: Express.Multer.File) {
     Logger.log("Processing uploaded file...");
 
-    return await this.csvQueue.add({ file });
+    return this.csvQueue.add({ file });
   }
 }

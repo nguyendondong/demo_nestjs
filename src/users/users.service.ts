@@ -60,8 +60,6 @@ export class UsersService extends BaseService {
     return user;
   }
 
-  xx;
-
   async findById(id: number): Promise<User> {
     const user = await this.entityManager.findOne(User, {
       where: {

@@ -10,6 +10,7 @@ import { ScheduleModule } from "@nestjs/schedule";
 import { MailModule } from "./mail/mail.module";
 import { BullModule } from "@nestjs/bull";
 import { CsvModule } from "@/csv/csv.module";
+import { WorkerModule } from "./worker/worker.module";
 
 @Module({
   imports: [
@@ -23,6 +24,7 @@ import { CsvModule } from "@/csv/csv.module";
       inject: [ConfigService],
       useFactory: async (configService: ConfigService) => ({
         redis: {
+          name: "NestJS-Demo-Redis",
           host: configService.get("REDIS_HOST"),
           port: configService.get("REDIS_PORT"),
         },
@@ -32,6 +34,7 @@ import { CsvModule } from "@/csv/csv.module";
     CsvModule,
     AuthModule,
     MailModule,
+    WorkerModule,
   ],
   providers: [JwtService, BcryptService],
 })
