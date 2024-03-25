@@ -23,8 +23,31 @@ services:
     restart: on-failure:10
     image: dockage/mailcatcher:0.9.0
     ports:
-      - "1080:1080"
-      - "1025:1025"
+      - 1080:1080
+      - 1025:1025
+    networks:
+      - demo-nestjs-network
+
+  redis:
+    image: redis:latest
+    command: redis-server
+    volumes:
+      - redis_data:/data
+    expose:
+      - 6379
+    ports:
+      - 6379:6379
+    networks:
+      - demo-nestjs-network
+
+  redis-worker:
+    image: rediscommander/redis-commander:latest
+    ports:
+      - 8088:8081
+    depends_on:
+      - redis
+    environment:
+      - REDIS_HOSTS=local:redis:6379
     networks:
       - demo-nestjs-network
 
@@ -34,3 +57,4 @@ networks:
 
 volumes:
   postgres_data:
+  redis_data:

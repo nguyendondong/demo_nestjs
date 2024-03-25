@@ -5,20 +5,18 @@ import { TypeOrmModule } from "@nestjs/typeorm";
 import { User } from "@/database/entities/user.entity";
 import { BcryptService } from "@/base/bcrypt.service";
 import { BaseService } from "@/base/base.service";
-import { BlobService } from "@/blob/blob.service";
-import { CsvService } from "@/base/csv.service";
-import { MailService } from "@/mail/mail.service";
+import { CsvModule } from "@/csv/csv.module";
+import { BlobModule } from "@/blob/blob.module";
+import { MailModule } from "@/mail/mail.module";
 
 @Module({
-  imports: [TypeOrmModule.forFeature([User])],
-  controllers: [UsersController],
-  providers: [
-    UsersService,
-    BcryptService,
-    BlobService,
-    CsvService,
-    MailService,
-    BaseService,
+  imports: [
+    TypeOrmModule.forFeature([User]),
+    CsvModule,
+    BlobModule,
+    MailModule,
   ],
+  controllers: [UsersController],
+  providers: [UsersService, BcryptService, BaseService],
 })
 export class UsersModule {}

@@ -1,6 +1,6 @@
 import { Injectable } from "@nestjs/common";
 import { InjectEntityManager } from "@nestjs/typeorm";
-import { DeepPartial, EntityManager, EntityTarget, Like } from "typeorm";
+import { EntityManager, EntityTarget, Like } from "typeorm";
 import { responsePagination } from "@/base/dto/pagination.dto";
 import { FindOptionsOrder } from "typeorm/find-options/FindOptionsOrder";
 import { ResponseUserDto } from "@/users/dto/create-user.dto";
@@ -52,16 +52,15 @@ export class BaseService {
     };
   }
 
-  async createMultiple<Entity>(
+  async updateMultiple<Entity>(
     entity: EntityTarget<Entity>,
-    entities: QueryDeepPartialEntity<Entity>[]
+    entities: QueryDeepPartialEntity<Entity>[],
+    conflictPaths: string[]
   ) {
     await this.entityManager.upsert(entity, entities, {
-      conflictPaths: ["email"],
+      conflictPaths: conflictPaths,
       skipUpdateIfNoValuesChanged: true,
     });
-
-    // await this.entityManager.save(entity, dataEntity);
 
     return true;
   }

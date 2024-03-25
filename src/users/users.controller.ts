@@ -23,12 +23,17 @@ import { ApiBearerAuth, ApiTags } from "@nestjs/swagger";
 import { FileInterceptor } from "@nestjs/platform-express";
 import { storage } from "@/config/storage.config";
 import { ValidationException } from "@/exception/base.exception";
+import { CsvService } from "@/csv/csv.service";
+import { QueuesName } from "@/worker/queues";
 
 @ApiBearerAuth()
 @ApiTags("Users")
 @Controller("users")
 export class UsersController {
-  constructor(private readonly usersService: UsersService) {}
+  constructor(
+    private readonly usersService: UsersService,
+    private readonly csvService: CsvService
+  ) {}
 
   @Post("/register")
   register(@Body() createUserDto: CreateUserDto): Promise<ResponseUserDto> {
@@ -96,7 +101,8 @@ export class UsersController {
     file: Express.Multer.File
   ) {
     try {
-      return await this.usersService.creaUserByCsv(file);
+      // return await this.usersService.creaUserByCsv(file);
+      this.csvService.CronJobcreaUserByCsv(QueuesName.createUserByCsv, file);
     } catch (error) {
       throw new ValidationException(error.detail, error.code);
     }

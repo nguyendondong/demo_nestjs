@@ -7,9 +7,8 @@ import { User } from "@/database/entities/user.entity";
 import { BcryptService } from "@/base/bcrypt.service";
 import { JwtModule } from "@nestjs/jwt";
 import { jwtConstants } from "@/auth/constants";
+import { MailModule } from "@/mail/mail.module";
 import { BlobService } from "@/blob/blob.service";
-import { CsvService } from "@/base/csv.service";
-import { MailService } from "@/mail/mail.service";
 
 @Module({
   imports: [
@@ -19,15 +18,9 @@ import { MailService } from "@/mail/mail.service";
       signOptions: { expiresIn: jwtConstants.expiresIn },
       global: true,
     }),
+    MailModule,
   ],
   controllers: [AuthController],
-  providers: [
-    AuthService,
-    BcryptService,
-    UsersService,
-    CsvService,
-    MailService,
-    BlobService,
-  ],
+  providers: [AuthService, BcryptService, UsersService, BlobService],
 })
 export class AuthModule {}

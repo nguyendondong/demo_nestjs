@@ -18,5 +18,6 @@ import { ThrottlerModule } from "@nestjs/throttler";
   ],
   controllers: [BlobController],
   providers: [BlobService],
+  exports: [BlobService],
 })
 export class BlobModule {}

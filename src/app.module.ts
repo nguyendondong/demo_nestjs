@@ -1,6 +1,6 @@
 import { Module } from "@nestjs/common";
 import { TypeOrmModule } from "@nestjs/typeorm";
-import { ConfigModule } from "@nestjs/config";
+import { ConfigModule, ConfigService } from "@nestjs/config";
 import { UsersModule } from "./users/users.module";
 import { dataOptions } from "./database/data-source";
 import { AuthModule } from "./auth/auth.module";
@@ -10,8 +10,11 @@ import { BcryptService } from "@/base/bcrypt.service";
 import { BlobModule } from "@/blob/blob.module";
 import { BlobService } from "@/blob/blob.service";
 import { ScheduleModule } from "@nestjs/schedule";
-import { CsvService } from "@/base/csv.service";
+import { CsvService } from "@/csv/csv.service";
 import { MailModule } from "./mail/mail.module";
+import { BullModule } from "@nestjs/bull";
+import { CsvModule } from "@/csv/csv.module";
+import { QueuesName } from "@/worker/queues";
 
 @Module({
   imports: [
@@ -21,12 +24,20 @@ import { MailModule } from "./mail/mail.module";
     }),
     TypeOrmModule.forRoot(dataOptions),
     ScheduleModule.forRoot(),
+    BullModule.forRootAsync({
+      inject: [ConfigService],
+      useFactory: async (configService: ConfigService) => ({
+        redis: {
+          host: configService.get("REDIS_HOST"),
+          port: configService.get("REDIS_PORT"),
+        },
+      }),
+    }),
     UsersModule,
+    CsvModule,
     AuthModule,
-    BlobModule,
     MailModule,
   ],
-  controllers: [],
-  providers: [JwtService, UsersService, BlobService, CsvService, BcryptService],
+  providers: [JwtService, BcryptService],
 })
 export class AppModule {}
