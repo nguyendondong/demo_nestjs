@@ -7,6 +7,7 @@ import { ResponseUserDto } from "@/users/dto/create-user.dto";
 import Helpers from "@/utils/TransformDataUtils";
 import { SearchDto } from "@/users/dto/search.dto";
 import { QueryDeepPartialEntity } from "typeorm/query-builder/QueryPartialEntity";
+import { I18nContext } from "nestjs-i18n";
 
 @Injectable()
 export class BaseService {
@@ -15,7 +16,7 @@ export class BaseService {
   ) {}
 
   async FindWithPagination<Entity>(
-    entity: { new (): Entity },
+    entity: EntityTarget<Entity>,
     searchDto: SearchDto
   ): Promise<responsePagination> {
     const options: FindOptionsOrder<any> = {
@@ -52,7 +53,7 @@ export class BaseService {
     };
   }
 
-  async updateMultiple<Entity>(
+  async upsertMultiple<Entity>(
     entity: EntityTarget<Entity>,
     entities: QueryDeepPartialEntity<Entity>[],
     conflictPaths: string[]
@@ -63,5 +64,12 @@ export class BaseService {
     });
 
     return true;
+  }
+
+  t(key: any, args?: Record<string, unknown>): string {
+    return I18nContext.current().translate(key, {
+      lang: I18nContext.current().lang,
+      args,
+    });
   }
 }

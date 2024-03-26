@@ -11,7 +11,7 @@ export class WorkerService {
     private readonly entityManager: EntityManager
   ) {}
 
-  @Cron(CronExpression.EVERY_5_SECONDS)
+  @Cron(CronExpression.EVERY_1ST_DAY_OF_MONTH_AT_MIDNIGHT)
   async sendEventEmail() {
     console.log("sendEventEmail running...");
     const users = await this.entityManager.find(User);

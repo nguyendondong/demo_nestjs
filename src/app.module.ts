@@ -11,6 +11,13 @@ import { MailModule } from "./mail/mail.module";
 import { BullModule } from "@nestjs/bull";
 import { CsvModule } from "@/csv/csv.module";
 import { WorkerModule } from "./worker/worker.module";
+import { I18nModule } from "nestjs-i18n";
+import {
+  AcceptLanguageResolver,
+  HeaderResolver,
+  QueryResolver,
+} from "nestjs-i18n";
+import { join } from "path";
 
 @Module({
   imports: [
@@ -29,6 +36,22 @@ import { WorkerModule } from "./worker/worker.module";
           port: configService.get("REDIS_PORT"),
         },
       }),
+    }),
+    I18nModule.forRootAsync({
+      useFactory: (configService: ConfigService) => ({
+        fallbackLanguage: configService.getOrThrow("FALLBACK_LANGUAGE"),
+        typesOutputPath: join(__dirname, "../src/i18n/i18n.generated.ts"),
+        loaderOptions: {
+          path: join(__dirname, "./i18n/"),
+          watch: true,
+        },
+      }),
+      resolvers: [
+        { use: QueryResolver, options: ["lang"] },
+        AcceptLanguageResolver,
+        new HeaderResolver(["x-lang"]),
+      ],
+      inject: [ConfigService],
     }),
     UsersModule,
     CsvModule,

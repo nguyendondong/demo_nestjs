@@ -12,6 +12,7 @@ import {
   UseInterceptors,
   ParseFilePipe,
   FileTypeValidator,
+  BadGatewayException,
 } from "@nestjs/common";
 import { UsersService } from "./users.service";
 import { UpdateUserDto } from "./dto/update-user.dto";
@@ -22,9 +23,9 @@ import { CreateUserDto, ResponseUserDto } from "@/users/dto/create-user.dto";
 import { ApiBearerAuth, ApiTags } from "@nestjs/swagger";
 import { FileInterceptor } from "@nestjs/platform-express";
 import { storage } from "@/config/storage.config";
-import { ValidationException } from "@/exception/base.exception";
 import { CsvService } from "@/csv/csv.service";
 import { QueuesName } from "@/worker/queues";
+import { I18nService } from "nestjs-i18n";
 
 @ApiBearerAuth()
 @ApiTags("Users")
@@ -32,7 +33,8 @@ import { QueuesName } from "@/worker/queues";
 export class UsersController {
   constructor(
     private readonly usersService: UsersService,
-    private readonly csvService: CsvService
+    private readonly csvService: CsvService,
+    private readonly i18n: I18nService
   ) {}
 
   @Post("/register")
@@ -101,10 +103,16 @@ export class UsersController {
     file: Express.Multer.File
   ) {
     try {
-      // return await this.usersService.creaUserByCsv(file);
-      this.csvService.CronJobcreaUserByCsv(QueuesName.createUserByCsv, file);
+      if (file.size > 5 * 1024 * 1024) {
+        return await this.csvService.createUserByCsv(file);
+      } else {
+        await this.csvService.CronJobcreaUserByCsv(
+          QueuesName.createUserByCsv,
+          file
+        );
+      }
     } catch (error) {
-      throw new ValidationException(error.detail, error.code);
+      throw new BadGatewayException();
     }
   }
 }

@@ -52,8 +52,8 @@ export class BlobController {
   }
 
   @Get()
-  findAll() {
-    return this.blobService.findAll();
+  async findAll() {
+    return await this.blobService.WithoutAttachment();
   }
 
   @Get(":id")

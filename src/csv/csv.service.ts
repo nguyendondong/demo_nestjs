@@ -22,7 +22,7 @@ export class CsvService extends BaseService {
     super(entityManager);
   }
 
-  async processFile(fileName: string): Promise<any> {
+  async ProcessImportFile(fileName: string): Promise<any> {
     console.log("Allow to solve file CSV");
     const csvData: any[] = [];
     const readStream = fs.createReadStream(`uploads/csv/${fileName}`);
@@ -66,11 +66,11 @@ export class CsvService extends BaseService {
       })
     );
 
-    return await this.updateMultiple(User, res, ["email"]);
+    return await this.upsertMultiple(User, res, ["email"]);
   }
 
   async createUserByCsv(file: Express.Multer.File) {
-    const dataCsv = await this.processFile(file.filename);
+    const dataCsv = await this.ProcessImportFile(file.filename);
     const { header_row, data } = dataCsv;
 
     await Promise.all([
@@ -82,7 +82,7 @@ export class CsvService extends BaseService {
   }
 
   CronJobcreaUserByCsv(name: string, file: Express.Multer.File) {
-    Logger.log("Processing uploaded file...");
+    Logger.log(`File so Big. Processing in background file ${name} start...`);
 
     return this.csvQueue.add({ file });
   }

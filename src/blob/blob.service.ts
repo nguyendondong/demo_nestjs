@@ -5,6 +5,7 @@ import { PutObjectCommand } from "@aws-sdk/client-s3";
 import { EntityManager } from "typeorm";
 import { Blob } from "@/database/entities/blob.entity";
 import { s3Client } from "@/base/S3Client";
+import { Attachment } from "@/database/entities/attachment.entity";
 
 @Injectable()
 export class BlobService {
@@ -57,5 +58,13 @@ export class BlobService {
 
   remove(id: number) {
     return `This action removes a #${id} Blob`;
+  }
+
+  async WithoutAttachment() {
+    return this.entityManager
+      .createQueryBuilder(Blob, "blob")
+      .leftJoin(Attachment, "attachment", "attachment.blob = blob.id")
+      .where("attachment.blob is null")
+      .getMany();
   }
 }

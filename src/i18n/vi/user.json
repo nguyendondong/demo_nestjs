@@ -1,0 +1,9 @@
+{
+  "name": "Tên",
+  "email": "Email",
+  "password": "Mat khẩu",
+  "confirm_password": "Xác nhận mật khẩu",
+  "login": "Đăng nhập",
+  "register": "Đăng ký",
+  "reset_password": "Thay đổi mật khẩu"
+}

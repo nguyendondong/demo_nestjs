@@ -3,6 +3,11 @@ import { AppModule } from "./app.module";
 import { ValidationPipe } from "@nestjs/common";
 import { HttpExceptionFilter } from "@/exception/http-exception.filter";
 import { DocumentBuilder, SwaggerModule } from "@nestjs/swagger";
+import {
+  i18nValidationErrorFactory,
+  I18nValidationExceptionFilter,
+  I18nValidationPipe,
+} from "nestjs-i18n";
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -12,9 +17,23 @@ async function bootstrap() {
       transformOptions: {
         enableImplicitConversion: true,
       },
+      exceptionFactory: i18nValidationErrorFactory,
+    }),
+    new I18nValidationPipe()
+  );
+  app.useGlobalFilters(
+    new HttpExceptionFilter(),
+    new I18nValidationExceptionFilter({
+      errorFormatter: (dataError) => {
+        console.log(dataError);
+        return dataError;
+        // return {
+        //   message: error.message,
+        //   code: error.code,
+        // };
+      },
     })
   );
-  app.useGlobalFilters(new HttpExceptionFilter());
 
   const config = new DocumentBuilder()
     .setTitle("NestJS Demo API")
