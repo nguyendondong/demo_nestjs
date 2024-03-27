@@ -1,29 +1,25 @@
-import { HttpException, HttpStatus } from "@nestjs/common";
+import { ValidationError } from "@nestjs/common";
 
-export enum errorName {
-  VALIDATION_EXCEPTION = "validation_exception",
-}
-
-export class BaseException extends HttpException {
-  errorName: errorName;
-
-  constructor(
-    message: string | Record<string, any>,
-    errorName: errorName,
-    status: number
-  ) {
-    super(message, status);
-
-    this.errorName = errorName;
+function FormatterError(errors: ValidationError[]): any {
+  if (!errors) {
+    return;
   }
+  const dataError = {};
+  errors.forEach((error) => {
+    const { property, constraints } = error;
+    if (constraints) {
+      Object.keys(constraints).forEach((key) => {
+        dataError[property] = constraints[key];
+      });
+    }
+  });
+  return dataError;
 }
 
-export class ValidationException extends BaseException {
-  constructor(message: string | Record<string, any>, code: string) {
-    super(
-      { message, code },
-      errorName.VALIDATION_EXCEPTION,
-      HttpStatus.BAD_REQUEST
-    );
-  }
-}
+export type FormatterErrorType = {
+  statusCode: number;
+  message: string;
+  errors: any;
+};
+
+export default FormatterError;

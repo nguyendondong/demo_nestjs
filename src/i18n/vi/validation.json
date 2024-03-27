@@ -1,8 +1,8 @@
 {
-  "NOT_EMPTY": "{value} không được rỗng",
-  "INVALID_EMAIL": "email không hợp lệ",
-  "IS_STRING": "{property} phải là 1 chuỗi",
+  "NOT_EMPTY": "$t(Field.{property}) phải không được rỗng",
+  "INVALID_EMAIL": "$t(Field.{property}) không hợp lệ",
+  "IS_STRING": "$t(Field.{property}) phải là 1 chuỗi",
   "INVALID_BOOLEAN": "{property} không hợp lệ",
-  "MIN": "{property} với giá trị: \"{value}\" cần phải >= {constraints.0}, ow and {message}",
-  "MAX": "{property} với giá trị: \"{value}\" cần phải <= {constraints.0}, ow and {message}"
+  "MIN": "$t(Field.{property}) với giá trị: \"{value}\" cần phải >= {constraints.0}, ow and {message}",
+  "MAX": "$t(Field.{property}) với giá trị: \"{value}\" cần phải <= {constraints.0}, ow and {message}"
 }

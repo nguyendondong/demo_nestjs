@@ -1,7 +1,7 @@
 import { Injectable, Logger } from "@nestjs/common";
 import * as fs from "fs";
 import { parse } from "csv-parse";
-import { CsvFileData } from "@/utils/validator/csv-validation.dto";
+import { CsvFileData } from "@/base/dto/csv-validation.dto";
 import { InjectQueue } from "@nestjs/bull";
 import { Queue } from "bull";
 import { QueuesName } from "@/worker/queues";

@@ -1,9 +1,13 @@
-import { Injectable, Logger, UnauthorizedException } from "@nestjs/common";
+import {
+  BadRequestException,
+  Injectable,
+  Logger,
+  UnauthorizedException,
+} from "@nestjs/common";
 import { UpdateUserDto } from "./dto/update-user.dto";
 import { User } from "@/database/entities/user.entity";
 import { EntityManager } from "typeorm";
 import { CreateUserDto, ResponseUserDto } from "@/users/dto/create-user.dto";
-import { ValidationException } from "@/exception/base.exception";
 import { BcryptService } from "@/base/bcrypt.service";
 import Helpers from "@/utils/TransformDataUtils";
 import { BaseService } from "@/base/base.service";
@@ -27,22 +31,22 @@ export class UsersService extends BaseService {
   }
 
   async create(createUserDto: CreateUserDto): Promise<ResponseUserDto> {
-    try {
-      const hashPassword = await this.bcryptService.hash(
-        createUserDto.password
-      );
-      const userData = this.entityManager.create(User, {
-        ...createUserDto,
-        password: hashPassword,
-      });
-
-      const user = await this.entityManager.save(User, userData);
-      await this.mailService.sendUserConfirmation(user, "token");
-
-      return Helpers.transformDataEnitity(ResponseUserDto, user);
-    } catch (error) {
-      throw new ValidationException(error.detail, error.code);
+    const userExists = await this.entityManager.existsBy(User, {
+      email: createUserDto.email,
+    });
+    if (userExists) {
+      throw new BadRequestException(this.t("user.emailAlreadyExists"));
     }
+    const hashPassword = await this.bcryptService.hash(createUserDto.password);
+    const userData = this.entityManager.create(User, {
+      ...createUserDto,
+      password: hashPassword,
+    });
+
+    const user = await this.entityManager.save(User, userData);
+    await this.mailService.sendUserConfirmation(user, "token");
+
+    return Helpers.transformDataEnitity(ResponseUserDto, user);
   }
 
   async findAll(searchDto: SearchDto): Promise<responsePagination> {
