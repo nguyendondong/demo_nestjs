@@ -84,6 +84,6 @@ export class CsvService extends BaseService {
   CronJobcreaUserByCsv(name: string, file: Express.Multer.File) {
     Logger.log(`File so Big. Processing in background file ${name} start...`);
 
-    return this.csvQueue.add({ file });
+    return this.csvQueue.add("createUserByCsv", { file });
   }
 }

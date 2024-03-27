@@ -6,6 +6,7 @@ import { InjectQueue } from "@nestjs/bull";
 import { QueuesName } from "@/worker/queues";
 import { Queue } from "bull";
 import { I18nService } from "nestjs-i18n";
+import Utils from "@/utils/Utils";
 
 @Injectable()
 export class MailService {
@@ -22,24 +23,29 @@ export class MailService {
     await this.mailerService.sendMail({
       to: user.email,
       from: `"Support Team" <${this.configService.get<string>("MAIL_SUPPORT_TEAM")}>`, // override default from
-      subject: "Welcome to Nice App! Confirm your Email",
+      subject: Utils.t("mail.subject"),
       template: "confirmation",
       context: {
-        name: user.name,
+        hello: Utils.t("mail.hello", { name: `${user.name}` }),
+        confirmationDescription: Utils.t("mail.confirmationDescription"),
+        ignoreDescription: Utils.t("mail.ignoreDescription"),
+        confirm: Utils.t("mail.confirm"),
         url,
       },
     });
   }
 
   async sendEmailEventUseMultiple(users: User[], eventURL: string) {
-    return this.emailQueue.add({ users, eventURL });
+    return this.emailQueue.add("event", { users, eventURL });
   }
 
   async sendEmailEvent(user: User, eventURL: string) {
     await this.mailerService.sendMail({
       to: user.email,
       from: `"Support Team" <${this.configService.get<string>("MAIL_SUPPORT_TEAM")}>`, // override default from
-      subject: "Welcome to Nice App! It's event time!",
+      subject: this.i18n.translate("mail.subject", {
+        lang: "en",
+      }),
       template: "evention",
       context: {
         hello: this.i18n.translate("mail.hello", {

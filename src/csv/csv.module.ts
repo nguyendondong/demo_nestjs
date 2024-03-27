@@ -5,7 +5,7 @@ import { QueuesName } from "@/worker/queues";
 import { BaseService } from "@/base/base.service";
 import { BlobService } from "@/blob/blob.service";
 import { BcryptService } from "@/base/bcrypt.service";
-import { createUserByCsvProcessor } from "@/worker/processor/createUserByCsv.processor";
+import { csvProcessor } from "@/worker/processor/csv.processor";
 
 @Module({
   imports: [
@@ -19,7 +19,7 @@ import { createUserByCsvProcessor } from "@/worker/processor/createUserByCsv.pro
     BaseService,
     BlobService,
     BcryptService,
-    createUserByCsvProcessor,
+    csvProcessor,
   ],
 
   exports: [CsvService],

@@ -4,7 +4,6 @@ import { MailService } from "./mail.service";
 import { mailConfig } from "@/config/mail.config";
 import { BullModule } from "@nestjs/bull";
 import { QueuesName } from "@/worker/queues";
-import { I18nContext } from "nestjs-i18n";
 
 @Module({
   imports: [
@@ -13,7 +12,7 @@ import { I18nContext } from "nestjs-i18n";
       name: QueuesName.email,
     }),
   ],
-  providers: [MailService, I18nContext],
+  providers: [MailService],
   exports: [MailService],
 })
 export class MailModule {}

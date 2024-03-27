@@ -35,6 +35,10 @@ import { join } from "path";
           host: configService.get("REDIS_HOST"),
           port: configService.get("REDIS_PORT"),
         },
+        defaultJobOptions: {
+          attempts: 3,
+          // removeOnComplete: true
+        },
       }),
     }),
     I18nModule.forRootAsync({

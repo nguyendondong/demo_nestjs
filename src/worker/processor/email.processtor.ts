@@ -3,10 +3,10 @@ import { QueuesName } from "@/worker/queues";
 import { MailService } from "@/mail/mail.service";
 
 @Processor(QueuesName.email)
-export class SendEmailEventProcesstor {
+export class EmailProcesstor {
   constructor(private readonly emailService: MailService) {}
 
-  @Process()
+  @Process("event")
   async sendEmail(job: any) {
     const { users, eventURL } = job.data;
     await Promise.all(

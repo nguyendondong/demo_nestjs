@@ -1,10 +1,10 @@
 import { Module } from "@nestjs/common";
 import { WorkerService } from "@/worker/worker.service";
-import { SendEmailEventProcesstor } from "@/worker/processor/sendEmailEvent.processtor";
+import { EmailProcesstor } from "@/worker/processor/email.processtor";
 import { MailModule } from "@/mail/mail.module";
 
 @Module({
   imports: [MailModule],
-  providers: [WorkerService, SendEmailEventProcesstor],
+  providers: [WorkerService, EmailProcesstor],
 })
 export class WorkerModule {}

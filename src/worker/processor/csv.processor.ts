@@ -5,12 +5,12 @@ import { Job } from "bull";
 import { CsvService } from "@/csv/csv.service";
 
 @Processor(QueuesName.createUserByCsv)
-export class createUserByCsvProcessor {
+export class csvProcessor {
   private logger = new Logger();
 
   constructor(private readonly csvService: CsvService) {}
 
-  @Process()
+  @Process("createUserByCsv")
   async handleTask(job: Job) {
     const file = job.data.file;
     return await this.process(file);
