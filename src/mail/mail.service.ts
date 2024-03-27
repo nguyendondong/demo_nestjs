@@ -5,13 +5,15 @@ import { ConfigService } from "@nestjs/config";
 import { InjectQueue } from "@nestjs/bull";
 import { QueuesName } from "@/worker/queues";
 import { Queue } from "bull";
+import { I18nService } from "nestjs-i18n";
 
 @Injectable()
 export class MailService {
   constructor(
     @InjectQueue(QueuesName.email) private emailQueue: Queue,
     private mailerService: MailerService,
-    private configService: ConfigService
+    private configService: ConfigService,
+    private readonly i18n: I18nService
   ) {}
 
   async sendUserConfirmation(user: User, token: string) {
@@ -40,7 +42,22 @@ export class MailService {
       subject: "Welcome to Nice App! It's event time!",
       template: "evention",
       context: {
-        name: user.name,
+        hello: this.i18n.translate("mail.hello", {
+          lang: "en",
+          args: { name: `${user.name}` },
+        }),
+        inviteDescription: this.i18n.translate("mail.inviteDescription", {
+          lang: "en",
+        }),
+        confirm: this.i18n.translate("mail.confirm", {
+          lang: "en",
+        }),
+        signature: this.i18n.translate("mail.signature", {
+          lang: "en",
+        }),
+        eventGift: this.i18n.translate("mail.eventGift", {
+          lang: "en",
+        }),
         eventURL,
       },
     });

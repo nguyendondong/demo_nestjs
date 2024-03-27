@@ -1,8 +1,8 @@
 {
-  "NOT_EMPTY": "$t(Field.{property}) is required",
-  "INVALID_EMAIL": "$t(Field.{property}) invalid",
-  "IS_STRING": "$t(Field.{property}) is not a string",
-  "INVALID_BOOLEAN": "{property} is not a boolean",
-  "MIN": "$t(Field.{property}) with value: \"{value}\" must be >= {constraints.0}, ow and {message}",
-  "MAX": "$t(Field.{property}) with value: \"{value}\" must be <= {constraints.0}, ow and {message}"
+  "NOT_EMPTY": "$t(field.{property}) is required",
+  "INVALID_EMAIL": "$t(field.{property}) invalid",
+  "IS_STRING": "$t(field.{property}) is not a string",
+  "INVALID_BOOLEAN": "$t(field.{property}) is not a boolean",
+  "MIN": "$t(field.{property}) with value: \"{value}\" must be >= {constraints.0}, ow and {message}",
+  "MAX": "$t(field.{property}) with value: \"{value}\" must be <= {constraints.0}, ow and {message}"
 }

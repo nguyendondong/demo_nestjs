@@ -9,7 +9,7 @@ export class SendEmailEventProcesstor {
   @Process()
   async sendEmail(job: any) {
     const { users, eventURL } = job.data;
-    Promise.all(
+    await Promise.all(
       (users || []).map((user) =>
         this.emailService.sendEmailEvent(user, eventURL)
       )

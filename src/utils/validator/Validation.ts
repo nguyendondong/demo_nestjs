@@ -9,6 +9,6 @@ export const ValidationMessage = {
     return i18nValidationMessage("validation.IS_STRING");
   },
   INVALID_EMAIL() {
-    return i18nValidationMessage(`validation.INVALID_EMAIL`);
+    return i18nValidationMessage("validation.INVALID_EMAIL");
   },
 };

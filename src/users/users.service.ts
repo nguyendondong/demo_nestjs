@@ -16,6 +16,7 @@ import { responsePagination } from "@/base/dto/pagination.dto";
 import { BlobService } from "@/blob/blob.service";
 import { Attachment } from "@/database/entities/attachment.entity";
 import { MailService } from "@/mail/mail.service";
+import Utils from "@/utils/Utils";
 
 @Injectable()
 export class UsersService extends BaseService {
@@ -35,7 +36,7 @@ export class UsersService extends BaseService {
       email: createUserDto.email,
     });
     if (userExists) {
-      throw new BadRequestException(this.t("user.emailAlreadyExists"));
+      throw new BadRequestException(Utils.t("user.emailAlreadyExists"));
     }
     const hashPassword = await this.bcryptService.hash(createUserDto.password);
     const userData = this.entityManager.create(User, {
