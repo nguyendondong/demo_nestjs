@@ -1,6 +1,6 @@
 import { Process, Processor } from "@nestjs/bull";
 import { Logger } from "@nestjs/common";
-import { QueuesName } from "@/worker/queues";
+import { QueuesName } from "@/base";
 import { Job } from "bull";
 import { CsvService } from "@/csv/csv.service";
 

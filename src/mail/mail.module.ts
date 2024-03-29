@@ -3,7 +3,7 @@ import { Module } from "@nestjs/common";
 import { MailService } from "./mail.service";
 import { mailConfig } from "@/config/mail.config";
 import { BullModule } from "@nestjs/bull";
-import { QueuesName } from "@/worker/queues";
+import { QueuesName } from "@/base";
 
 @Module({
   imports: [

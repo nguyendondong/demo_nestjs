@@ -11,6 +11,7 @@ import { jwtConstants } from "@/auth/constants";
 import Helpers from "@/utils/TransformDataUtils";
 import { ResponseUserDto } from "@/users/dto/create-user.dto";
 import { User } from "@/database/entities/user.entity";
+import { RolesName } from "@/base";
 
 @Injectable()
 export class AuthService {
@@ -27,29 +28,38 @@ export class AuthService {
     if (!checkPass) {
       throw new UnauthorizedException("Password is wrong");
     }
-    return this.genateToken(user);
+    return this.generateToken(user);
   }
 
   async refreshToken(refreshToken: string): Promise<any> {
-    try {
-      const verify = await this.jwtService.verifyAsync(refreshToken, {
-        secret: jwtConstants.refreshTokenSecret,
-      });
+    const verify = await this.jwtService.verifyAsync(refreshToken, {
+      secret: jwtConstants.refreshTokenSecret,
+    });
 
-      const user = await this.usersService.findByEmail(verify.email);
+    const user = await this.usersService.findByEmail(verify.email);
 
-      if (user) {
-        return this.genateToken(user);
-      } else {
-        throw new UnauthorizedException("Refresh token is wrong");
-      }
-    } catch (error) {
-      throw new BadRequestException("Refresh token is wrong");
-    }
+    if (!user) throw new BadRequestException("Refresh token is wrong");
+
+    return this.generateToken(user);
   }
 
-  private async genateToken(user: User): Promise<responseLoginUserDto> {
-    const payload = { email: user.email, user_id: user.id };
+  async confirmEmail(token: string): Promise<any> {
+    const user = await this.usersService.findByToken(token);
+    if (!user) {
+      throw new BadRequestException("Token is wrong");
+    }
+    await this.usersService.update(user.id, {
+      role: RolesName.USER,
+    });
+    return Helpers.transformDataEnitity(ResponseUserDto, user);
+  }
+
+  private async generateToken(user: User): Promise<responseLoginUserDto> {
+    const payload = {
+      email: user.email,
+      user_id: user.id,
+      role: user.role,
+    };
     const access_token = await this.jwtService.signAsync(payload);
     const refresh_token = await this.jwtService.signAsync(payload, {
       secret: jwtConstants.refreshTokenSecret,

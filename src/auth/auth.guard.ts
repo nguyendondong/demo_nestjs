@@ -7,10 +7,17 @@ import {
 import { JwtService } from "@nestjs/jwt";
 import { jwtConstants } from "@/auth/constants";
 import { Request } from "express";
+import { EntityManager, Not } from "typeorm";
+import { User } from "@/database/entities/user.entity";
+import { RolesName } from "@/base";
+import Utils from "@/utils/Utils";
 
 @Injectable()
 export class AuthGuard implements CanActivate {
-  constructor(private readonly jwtService: JwtService) {}
+  constructor(
+    private readonly jwtService: JwtService,
+    protected readonly entityManager: EntityManager
+  ) {}
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
     const request = context.switchToHttp().getRequest();
@@ -18,18 +25,23 @@ export class AuthGuard implements CanActivate {
     if (!token) {
       throw new UnauthorizedException();
     }
-    try {
-      const payload = await this.jwtService.verifyAsync(token, {
-        secret: jwtConstants.secret,
-      });
+    const payload = await this.jwtService.verifyAsync(token, {
+      secret: jwtConstants.secret,
+    });
 
-      if (!payload) {
-        throw new UnauthorizedException();
-      }
-      request["user"] = payload;
-    } catch {
+    if (!payload) {
       throw new UnauthorizedException();
     }
+    const user = await this.entityManager.existsBy(User, {
+      id: payload.user_id,
+      role: Not(RolesName.INVALID_USER),
+    });
+    if (!user) {
+      throw new UnauthorizedException(
+        Utils.t("auth.invalidTokenOrUserInactive")
+      );
+    }
+    request.user = payload;
     return true;
   }
 

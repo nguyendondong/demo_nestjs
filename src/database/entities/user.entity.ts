@@ -2,6 +2,7 @@ import {
   Column,
   CreateDateColumn,
   Entity,
+  Index,
   JoinColumn,
   OneToMany,
   PrimaryGeneratedColumn,
@@ -9,6 +10,7 @@ import {
   UpdateDateColumn,
 } from "typeorm";
 import { Attachment } from "@/database/entities/attachment.entity";
+import { RolesName } from "@/base";
 
 @Entity({ name: "User" })
 export class User {
@@ -25,8 +27,15 @@ export class User {
   @Column()
   password: string;
 
-  @Column({ default: "" })
+  @Index()
+  @Column({ default: RolesName.INVALID_USER })
+  role: RolesName;
+
+  @Column({ default: null })
   refreshToken: string;
+
+  @Column({ default: null })
+  confirmationToken: string;
 
   @CreateDateColumn({ type: "timestamptz", default: () => "CURRENT_TIMESTAMP" })
   createdAt: Date;

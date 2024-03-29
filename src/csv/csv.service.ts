@@ -4,7 +4,7 @@ import { parse } from "csv-parse";
 import { CsvFileData } from "@/base/dto/csv-validation.dto";
 import { InjectQueue } from "@nestjs/bull";
 import { Queue } from "bull";
-import { QueuesName } from "@/worker/queues";
+import { QueuesName } from "@/base";
 import { BlobService } from "@/blob/blob.service";
 import { User } from "@/database/entities/user.entity";
 import { BaseService } from "@/base/base.service";
