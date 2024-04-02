@@ -14,11 +14,11 @@ import {
 import { BlobService } from "./blob.service";
 import { UpdateBlobDto } from "./dto/update-blob.dto";
 import { FileInterceptor } from "@nestjs/platform-express";
-import { AuthGuard } from "@/auth/auth.guard";
+import { AuthGuard } from "@/api/v1/auth/auth.guard";
 import { ApiTags } from "@nestjs/swagger";
 
 @ApiTags("Blob")
-@Controller("blob")
+@Controller("blobs")
 export class BlobController {
   constructor(private readonly blobService: BlobService) {}
 

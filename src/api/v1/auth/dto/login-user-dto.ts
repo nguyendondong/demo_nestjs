@@ -1,6 +1,6 @@
 import { IsEmail, IsNotEmpty, IsString } from "class-validator";
 import { ApiProperty } from "@nestjs/swagger";
-import { ResponseUserDto } from "@/users/dto/create-user.dto";
+import { ResponseUserDto } from "@/api/v1/users/dto/create-user.dto";
 import { i18nValidationMessage } from "nestjs-i18n";
 import { ValidationMessage } from "@/utils/validator/Validation";
 

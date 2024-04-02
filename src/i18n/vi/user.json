@@ -6,5 +6,6 @@
   "login": "Đăng nhập",
   "register": "Đăng ký",
   "reset_password": "Thay đổi mật khẩu",
-  "emailAlreadyExists": "Email đã đăng ký"
+  "emailAlreadyExists": "Email đã đăng ký",
+  "confirmPasswordNotMatch": "Xac nhan mat khau khong khop"
 }

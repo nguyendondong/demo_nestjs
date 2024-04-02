@@ -1,4 +1,4 @@
-import { PaginationDto } from "@/base/dto/pagination.dto";
+import { PaginationDto } from "@/api/base/dto/pagination.dto";
 import { IsOptional, IsString } from "class-validator";
 import { ApiProperty } from "@nestjs/swagger";
 

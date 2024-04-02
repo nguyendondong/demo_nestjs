@@ -4,7 +4,7 @@ import {
   ForbiddenException,
   Injectable,
 } from "@nestjs/common";
-import { RolesName } from "@/base";
+import { RolesName } from "src/api/base";
 import { Reflector } from "@nestjs/core";
 import { Roles } from "@/decorator/roles.decorator";
 import Utils from "@/utils/Utils";

@@ -3,7 +3,7 @@ import { Injectable } from "@nestjs/common";
 import { User } from "@/database/entities/user.entity";
 import { ConfigService } from "@nestjs/config";
 import { InjectQueue } from "@nestjs/bull";
-import { QueuesName } from "@/base";
+import { QueuesName } from "src/api/base";
 import { Queue } from "bull";
 import { I18nService } from "nestjs-i18n";
 
@@ -16,8 +16,20 @@ export class MailService {
     private readonly i18n: I18nService
   ) {}
 
+  async sendEmailConfirmation(lang: string, user: User, token: string) {
+    return this.emailQueue.add("confirmation", { lang, user, token });
+  }
+
+  async sendResetPassword(lang: string, user: User, token: string) {
+    return this.emailQueue.add("resetPassword", { lang, user, token });
+  }
+
+  async sendEmailEventUseMultiple(users: User[], eventURL: string) {
+    return this.emailQueue.add("event", { users, eventURL });
+  }
+
   async sendUserConfirmation(lang: string, user: User, token: string) {
-    const url = `http://localhost:3000/auth/confirmEmail?token=${token}`;
+    const url = `${this.configService.get<string>("APP_URL")}/api/v1/auth/confirm-email?token=${token}`;
 
     await this.mailerService.sendMail({
       to: user.email,
@@ -51,14 +63,6 @@ export class MailService {
     });
   }
 
-  async sendEmailConfirmation(lang: string, user: User, token: string) {
-    return this.emailQueue.add("confirmation", { lang, user, token });
-  }
-
-  async sendEmailEventUseMultiple(users: User[], eventURL: string) {
-    return this.emailQueue.add("event", { users, eventURL });
-  }
-
   async sendEmailEvent(user: User, eventURL: string) {
     await this.mailerService.sendMail({
       to: user.email,
@@ -85,6 +89,34 @@ export class MailService {
           lang: "en",
         }),
         eventURL,
+      },
+    });
+  }
+
+  async sendEmailResetPassword(lang: string, user: User, token: string) {
+    const url = `${this.configService.get<string>("APP_URL")}/api/v1/auth/reset-password?token=${token}`;
+    await this.mailerService.sendMail({
+      to: user.email,
+      from: `"Support Team" <${this.configService.get<string>("MAIL_SUPPORT_TEAM")}>`, // override default from
+      subject: this.i18n.translate("mail.resetPassword.subject", {
+        lang,
+      }),
+      template: "resetPassword",
+      context: {
+        hello: this.i18n.translate("mail.hello", {
+          lang,
+          args: { name: `${user.name}` },
+        }),
+        resetDescription: this.i18n.translate(
+          "mail.resetPassword.resetDescription",
+          {
+            lang,
+          }
+        ),
+        confirm: this.i18n.translate("mail.resetPassword.confirm", {
+          lang,
+        }),
+        url,
       },
     });
   }

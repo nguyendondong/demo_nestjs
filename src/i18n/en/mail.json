@@ -12,5 +12,10 @@
     "eventGift": "Get your early bird ticket today for only $100.! Prices are going up on today.",
     "confirm": "Confirm",
     "signature": "East Team"
+  },
+  "resetPassword": {
+    "subject": "Reset your password",
+    "resetDescription": "Please click below to reset your password",
+    "confirm": "Confirm"
   }
 }

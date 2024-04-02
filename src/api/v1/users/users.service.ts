@@ -7,19 +7,22 @@ import {
 import { UpdateUserDto } from "./dto/update-user.dto";
 import { User } from "@/database/entities/user.entity";
 import { EntityManager } from "typeorm";
-import { CreateUserDto, ResponseUserDto } from "@/users/dto/create-user.dto";
-import { BcryptService } from "@/base/bcrypt.service";
+import {
+  CreateUserDto,
+  ResponseUserDto,
+} from "@/api/v1/users/dto/create-user.dto";
+import { BcryptService } from "@/api/base/bcrypt.service";
 import Helpers from "@/utils/TransformDataUtils";
-import { BaseService } from "@/base/base.service";
-import { SearchDto } from "@/users/dto/search.dto";
-import { responsePagination } from "@/base/dto/pagination.dto";
-import { BlobService } from "@/blob/blob.service";
+import { BaseService } from "@/api/base/base.service";
+import { SearchDto } from "@/api/v1/users/dto/search.dto";
+import { responsePagination } from "@/api/base/dto/pagination.dto";
+import { BlobService } from "@/api/v1/blob/blob.service";
 import { Attachment } from "@/database/entities/attachment.entity";
 import { MailService } from "@/mail/mail.service";
 import Utils from "@/utils/Utils";
-import { jwtConstants } from "@/auth/constants";
+import { jwtConstants } from "@/api/v1/auth/constants";
 import { JwtService } from "@nestjs/jwt";
-import { RolesName } from "@/base";
+import { RecordType } from "@/api/base";
 
 @Injectable()
 export class UsersService extends BaseService {
@@ -39,7 +42,10 @@ export class UsersService extends BaseService {
     lang: string,
     createUserDto: CreateUserDto
   ): Promise<ResponseUserDto> {
-    const { email, password } = createUserDto;
+    const { email, password, confirm_password } = createUserDto;
+    if (password !== confirm_password) {
+      throw new BadRequestException(Utils.t("user.confirmPasswordNotMatch"));
+    }
     const userExists = await this.entityManager.existsBy(User, {
       email: email,
     });
@@ -109,7 +115,6 @@ export class UsersService extends BaseService {
       where: {
         email,
         confirmationToken,
-        role: RolesName.INVALID_USER,
       },
     });
     if (!user) {
@@ -124,12 +129,39 @@ export class UsersService extends BaseService {
     file?: Express.Multer.File
   ) {
     const user = await this.findById(id, { withBlob: false });
-    if (file && (await this.blobService.uploadFile(file))) {
+    await Promise.all([
+      this.uploadFile(file, user),
+      this.entityManager.update(User, id, { ...updateUserDto }),
+    ]);
+
+    return true;
+  }
+
+  // async remove(id: number) {
+  //   return await this.entityManager.delete(User, id);
+  // }
+
+  async generateRandomToken(email: string, token: string): Promise<string> {
+    const payload = {
+      email: email,
+      token: token,
+    };
+
+    return await this.jwtService.signAsync(payload, {
+      secret: jwtConstants.secret,
+      expiresIn: jwtConstants.expiresIn,
+    });
+  }
+
+  private async uploadFile(file: Express.Multer.File, user: User) {
+    if (!file) return;
+
+    if (await this.blobService.uploadFile(file)) {
       const blob = await this.blobService.create(file);
       const hasAvatar = await this.entityManager.findOne(Attachment, {
         where: {
           relationId: user.id,
-          relationType: "User",
+          relationType: RecordType.USER,
           fieldName: file.fieldname,
         },
       });
@@ -141,33 +173,11 @@ export class UsersService extends BaseService {
         const attachment = this.entityManager.create(Attachment, {
           fieldName: file.fieldname,
           relationId: user.id,
-          relationType: "User",
+          relationType: RecordType.USER,
           blob,
         });
         await this.entityManager.save(Attachment, attachment);
       }
     }
-    await this.entityManager.update(User, id, { ...updateUserDto });
-
-    return true;
-  }
-
-  async remove(id: number) {
-    return await this.entityManager.delete(User, id);
-  }
-
-  private async generateRandomToken(
-    email: string,
-    confirmationToken: string
-  ): Promise<string> {
-    const payload = {
-      email: email,
-      confirmationToken: confirmationToken,
-    };
-
-    return await this.jwtService.signAsync(payload, {
-      secret: jwtConstants.secret,
-      expiresIn: jwtConstants.expiresIn,
-    });
   }
 }

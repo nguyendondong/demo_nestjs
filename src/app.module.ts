@@ -1,16 +1,16 @@
 import { Module } from "@nestjs/common";
 import { TypeOrmModule } from "@nestjs/typeorm";
 import { ConfigModule, ConfigService } from "@nestjs/config";
-import { UsersModule } from "./users/users.module";
+import { UsersModule } from "@/api/v1/users/users.module";
 import { dataOptions } from "./database/data-source";
-import { AuthModule } from "./auth/auth.module";
+import { AuthModule } from "@/api/v1/auth/auth.module";
 import { JwtService } from "@nestjs/jwt";
-import { BcryptService } from "@/base/bcrypt.service";
+import { BcryptService } from "@/api/base/bcrypt.service";
 import { ScheduleModule } from "@nestjs/schedule";
 import { MailModule } from "./mail/mail.module";
 import { BullModule } from "@nestjs/bull";
-import { CsvModule } from "@/csv/csv.module";
-import { WorkerModule } from "./worker/worker.module";
+import { CsvModule } from "@/api/v1/csv/csv.module";
+import { WorkerModule } from "@/api/v1/worker/worker.module";
 import { I18nModule } from "nestjs-i18n";
 import {
   AcceptLanguageResolver,

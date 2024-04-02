@@ -1,11 +1,11 @@
 import { Module } from "@nestjs/common";
-import { CsvService } from "@/csv/csv.service";
+import { CsvService } from "@/api/v1/csv/csv.service";
 import { BullModule } from "@nestjs/bull";
-import { QueuesName } from "@/base";
-import { BaseService } from "@/base/base.service";
-import { BlobService } from "@/blob/blob.service";
-import { BcryptService } from "@/base/bcrypt.service";
-import { csvProcessor } from "@/worker/processor/csv.processor";
+import { QueuesName } from "@/api/base";
+import { BaseService } from "@/api/base/base.service";
+import { BlobService } from "@/api/v1/blob/blob.service";
+import { BcryptService } from "@/api/base/bcrypt.service";
+import { csvProcessor } from "@/processor/csv.processor";
 
 @Module({
   imports: [

@@ -3,14 +3,19 @@
   "confirmation": {
     "subject": "Chào mừng bạn đến với Ứng dụng Nice! Xác nhận email của bạn",
     "confirmationDescription": "Vui lý bắt đầu xác nhận email",
-    "confirm": "Confirm",
+    "confirm": "Xác nhận",
     "ignoreDescription": "Nếu bạn chưa đăng ký sự kiện này, vui lòng bỏ qua email này."
   },
   "event": {
     "subject": "Lời mời một sự kiện",
     "inviteDescription": "\"Chúng tôi rất vui được mời bạn tham dự sự kiện lớn nhất trong năm trong ngành của chúng tôi. Trong sự kiện này, bạn sẽ được nghe \\n diễn giả khách mời và có cơ hội kết nối trong các sự kiện buổi tối\\n đặc biệt.",
     "eventGift": "Nhận vé đặt sớm ngay hôm nay chỉ với $100.! Giá đang tăng lên vào ngày hôm nay.",
-    "confirm": "Confirm",
+    "confirm": "Xác nhận",
     "signature": "East Team"
+  },
+  "resetPassword": {
+    "subject": "Thay đổi mật khẩu",
+    "resetDescription": "Vui lòng sử dụng URL bắt đầu thay đổi mật khẩu",
+    "confirm": "Xác nhận"
   }
 }

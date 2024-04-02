@@ -1,11 +1,11 @@
 import { Injectable } from "@nestjs/common";
 import { InjectEntityManager } from "@nestjs/typeorm";
 import { EntityManager, EntityTarget, Like } from "typeorm";
-import { responsePagination } from "@/base/dto/pagination.dto";
+import { responsePagination } from "@/api/base/dto/pagination.dto";
 import { FindOptionsOrder } from "typeorm/find-options/FindOptionsOrder";
-import { ResponseUserDto } from "@/users/dto/create-user.dto";
+import { ResponseUserDto } from "@/api/v1/users/dto/create-user.dto";
 import Helpers from "@/utils/TransformDataUtils";
-import { SearchDto } from "@/users/dto/search.dto";
+import { SearchDto } from "@/api/v1/users/dto/search.dto";
 import { QueryDeepPartialEntity } from "typeorm/query-builder/QueryPartialEntity";
 
 @Injectable()

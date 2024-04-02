@@ -3,21 +3,26 @@ import {
   Injectable,
   UnauthorizedException,
 } from "@nestjs/common";
-import { UsersService } from "@/users/users.service";
-import { LoginUserDto, responseLoginUserDto } from "@/auth/dto/login-user-dto";
+import { UsersService } from "@/api/v1/users/users.service";
+import {
+  LoginUserDto,
+  responseLoginUserDto,
+} from "@/api/v1/auth/dto/login-user-dto";
 import { JwtService } from "@nestjs/jwt";
-import { BcryptService } from "@/base/bcrypt.service";
-import { jwtConstants } from "@/auth/constants";
+import { BcryptService } from "@/api/base/bcrypt.service";
+import { jwtConstants } from "@/api/v1/auth/constants";
 import Helpers from "@/utils/TransformDataUtils";
-import { ResponseUserDto } from "@/users/dto/create-user.dto";
+import { ResponseUserDto } from "@/api/v1/users/dto/create-user.dto";
 import { User } from "@/database/entities/user.entity";
-import { RolesName } from "@/base";
+import { RolesName } from "src/api/base";
+import { MailService } from "@/mail/mail.service";
 
 @Injectable()
 export class AuthService {
   constructor(
     private readonly bcryptService: BcryptService,
     private readonly usersService: UsersService,
+    private readonly mailService: MailService,
     private jwtService: JwtService
   ) {}
 
@@ -45,9 +50,6 @@ export class AuthService {
 
   async confirmEmail(token: string): Promise<any> {
     const user = await this.usersService.findByToken(token);
-    if (!user) {
-      throw new BadRequestException("Token is wrong");
-    }
     await this.usersService.update(user.id, {
       role: RolesName.USER,
     });
@@ -75,5 +77,19 @@ export class AuthService {
       refresh_token,
       dataUser,
     };
+  }
+
+  async resetPasswordByEmail(lang: string, email: string) {
+    const user = await this.usersService.findByEmail(email);
+    const token = await this.usersService.generateRandomToken(
+      email,
+      user.confirmationToken
+    );
+    await this.mailService.sendResetPassword(lang, user, token);
+  }
+
+  async confirmResetPasswordToken(token: string) {
+    const user = await this.usersService.findByToken(token);
+    return Helpers.transformDataEnitity(ResponseUserDto, user);
   }
 }

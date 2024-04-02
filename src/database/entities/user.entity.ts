@@ -10,7 +10,7 @@ import {
   UpdateDateColumn,
 } from "typeorm";
 import { Attachment } from "@/database/entities/attachment.entity";
-import { RolesName } from "@/base";
+import { RolesName } from "src/api/base";
 
 @Entity({ name: "User" })
 export class User {

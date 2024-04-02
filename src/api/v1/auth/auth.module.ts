@@ -1,14 +1,14 @@
 import { Module } from "@nestjs/common";
 import { AuthController } from "./auth.controller";
 import { AuthService } from "./auth.service";
-import { UsersService } from "@/users/users.service";
+import { UsersService } from "@/api/v1/users/users.service";
 import { TypeOrmModule } from "@nestjs/typeorm";
 import { User } from "@/database/entities/user.entity";
-import { BcryptService } from "@/base/bcrypt.service";
+import { BcryptService } from "@/api/base/bcrypt.service";
 import { JwtModule } from "@nestjs/jwt";
-import { jwtConstants } from "@/auth/constants";
+import { jwtConstants } from "@/api/v1/auth/constants";
 import { MailModule } from "@/mail/mail.module";
-import { BlobService } from "@/blob/blob.service";
+import { BlobService } from "@/api/v1/blob/blob.service";
 
 @Module({
   imports: [

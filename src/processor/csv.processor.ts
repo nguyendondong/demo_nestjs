@@ -1,8 +1,8 @@
 import { Process, Processor } from "@nestjs/bull";
 import { Logger } from "@nestjs/common";
-import { QueuesName } from "@/base";
+import { QueuesName } from "@/api/base";
 import { Job } from "bull";
-import { CsvService } from "@/csv/csv.service";
+import { CsvService } from "@/api/v1/csv/csv.service";
 
 @Processor(QueuesName.createUserByCsv)
 export class csvProcessor {

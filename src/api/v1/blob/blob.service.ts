@@ -4,7 +4,7 @@ import { UpdateBlobDto } from "./dto/update-blob.dto";
 import { PutObjectCommand } from "@aws-sdk/client-s3";
 import { EntityManager } from "typeorm";
 import { Blob } from "@/database/entities/blob.entity";
-import { s3Client } from "@/base/S3Client";
+import { s3Client } from "@/api/base/S3Client";
 import { Attachment } from "@/database/entities/attachment.entity";
 
 @Injectable()

@@ -1,7 +1,7 @@
 import { plainToClass, plainToInstance } from "class-transformer";
 import { GetObjectCommand } from "@aws-sdk/client-s3";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
-import { s3Client } from "@/base/S3Client";
+import { s3Client } from "@/api/base/S3Client";
 import { Attachment } from "@/database/entities/attachment.entity";
 
 const Helpers = {

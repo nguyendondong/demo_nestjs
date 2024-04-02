@@ -6,5 +6,6 @@
   "login": "Login",
   "register": "Register",
   "reset_password": "Reset Password",
-  "emailAlreadyExists": "Email already exists"
+  "emailAlreadyExists": "Email already exists",
+  "confirmPasswordNotMatch": "ConfirmPassword do not match"
 }

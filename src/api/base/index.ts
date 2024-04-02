@@ -8,3 +8,8 @@ export enum RolesName {
   USER = "user",
   INVALID_USER = "invalid_user",
 }
+
+export enum RecordType {
+  USER = "user",
+  BLOB = "blob",
+}

@@ -1,5 +1,5 @@
 import { Process, Processor } from "@nestjs/bull";
-import { QueuesName } from "@/base";
+import { QueuesName } from "@/api/base";
 import { MailService } from "@/mail/mail.service";
 
 @Processor(QueuesName.email)
@@ -21,5 +21,12 @@ export class EmailProcesstor {
     const { lang, user, token } = job.data;
 
     await this.emailService.sendUserConfirmation(lang, user, token);
+  }
+
+  @Process("resetPassword")
+  async sendEmailResetPassword(job: any) {
+    const { lang, user, token } = job.data;
+
+    await this.emailService.sendEmailResetPassword(lang, user, token);
   }
 }

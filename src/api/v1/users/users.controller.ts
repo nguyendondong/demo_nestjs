@@ -16,18 +16,21 @@ import {
 } from "@nestjs/common";
 import { UsersService } from "./users.service";
 import { UpdateUserDto } from "./dto/update-user.dto";
-import { AuthGuard } from "@/auth/auth.guard";
+import { AuthGuard } from "@/api/v1/auth/auth.guard";
 import Helpers from "@/utils/TransformDataUtils";
-import { SearchDto } from "@/users/dto/search.dto";
-import { CreateUserDto, ResponseUserDto } from "@/users/dto/create-user.dto";
+import { SearchDto } from "@/api/v1/users/dto/search.dto";
+import {
+  CreateUserDto,
+  ResponseUserDto,
+} from "@/api/v1/users/dto/create-user.dto";
 import { ApiBearerAuth, ApiTags } from "@nestjs/swagger";
 import { FileInterceptor } from "@nestjs/platform-express";
 import { storage } from "@/config/storage.config";
-import { CsvService } from "@/csv/csv.service";
-import { QueuesName, RolesName } from "@/base";
+import { CsvService } from "@/api/v1/csv/csv.service";
+import { QueuesName, RolesName } from "@/api/base";
 import { I18nContext } from "nestjs-i18n";
 import { Roles } from "@/decorator/roles.decorator";
-import { RolesGuard } from "@/auth/roles.guard";
+import { RolesGuard } from "@/api/v1/auth/roles.guard";
 
 @ApiBearerAuth()
 @ApiTags("Users")
