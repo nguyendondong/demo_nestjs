@@ -1,14 +1,14 @@
 import { Injectable, Logger } from "@nestjs/common";
 import * as fs from "fs";
 import { parse } from "csv-parse";
-import { CsvFileData } from "@/api/base/dto/csv-validation.dto";
+import { CsvFileData } from "src/api/base/dto/csv-validation.dto";
 import { InjectQueue } from "@nestjs/bull";
 import { Queue } from "bull";
-import { QueuesName } from "@/api/base";
-import { BlobService } from "@/api/v1/blob/blob.service";
-import { User } from "@/database/entities/user.entity";
-import { BaseService } from "@/api/base/base.service";
-import { BcryptService } from "@/api/base/bcrypt.service";
+import { QueuesName } from "src/api/base";
+import { BlobService } from "src/api/v1/blob/blob.service";
+import { User } from "src/database/entities/user.entity";
+import { BaseService } from "src/api/base/base.service";
+import { BcryptService } from "src/api/base/bcrypt.service";
 import { EntityManager } from "typeorm";
 
 @Injectable()

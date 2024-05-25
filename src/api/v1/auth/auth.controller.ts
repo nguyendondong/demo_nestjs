@@ -7,17 +7,29 @@ import { AuthService } from "@/api/v1/auth/auth.service";
 import { ApiResponse, ApiTags } from "@nestjs/swagger";
 import { unauthorizedResponse } from "@/swaggers/apiResponse.schemas";
 import { I18nContext } from "nestjs-i18n";
+import { CreateUserDto, ResponseUserDto } from "../users/dto/create-user.dto";
+import { UsersService } from "../users/users.service";
 
 @ApiTags("Auth")
 @Controller("auth")
 export class AuthController {
-  constructor(private readonly authService: AuthService) {}
+  constructor(
+    private readonly authService: AuthService,
+    private readonly usersService: UsersService
+  ) {}
 
   @Post("/login")
   @ApiResponse({ status: 200, description: "OK", type: responseLoginUserDto })
   @ApiResponse(unauthorizedResponse)
   async login(@Body() loginUserDto: LoginUserDto) {
-    return await this.authService.login(loginUserDto);
+    const lang = I18nContext.current().lang;
+    return await this.authService.login(lang, loginUserDto);
+  }
+
+  @Post("/register")
+  register(@Body() createUserDto: CreateUserDto): Promise<ResponseUserDto> {
+    const lang = I18nContext.current().lang;
+    return this.usersService.create(lang, createUserDto);
   }
 
   @Post("/refresh-token")

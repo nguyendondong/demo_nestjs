@@ -50,7 +50,9 @@ export class UsersService extends BaseService {
       email: email,
     });
     if (userExists) {
-      throw new BadRequestException(Utils.t("user.emailAlreadyExists"));
+      throw new BadRequestException({
+        email: Utils.t("user.emailAlreadyExists"),
+      });
     }
     const hashPassword = await this.bcryptService.hash(password);
     const confirmationToken = await this.bcryptService.hash(email);
@@ -61,8 +63,8 @@ export class UsersService extends BaseService {
     });
 
     const user = await this.entityManager.save(User, userData);
-    const mailToken = await this.generateRandomToken(email, confirmationToken);
-    await this.mailService.sendEmailConfirmation(lang, user, mailToken);
+    // const mailToken = await this.generateRandomToken(email, confirmationToken);
+    // await this.mailService.sendEmailConfirmation(lang, user, mailToken);
 
     return Helpers.transformDataEnitity(ResponseUserDto, user);
   }

@@ -42,13 +42,17 @@ export class BaseService {
     const lastPage = Math.ceil(count / limit);
     const nextPage = page + 1 > lastPage ? undefined : page + 1;
     const prevPage = page - 1 < 1 ? undefined : page - 1;
+    const currentPage = page;
+    const perPage = limit;
 
     return {
       data: Helpers.transformDataEnitity(ResponseUserDto, entities),
       count,
+      currentPage,
       lastPage,
       nextPage,
       prevPage,
+      perPage,
     };
   }
 

@@ -1,5 +1,6 @@
 import {
   BadRequestException,
+  ForbiddenException,
   Injectable,
   UnauthorizedException,
 } from "@nestjs/common";
@@ -16,6 +17,7 @@ import { ResponseUserDto } from "@/api/v1/users/dto/create-user.dto";
 import { User } from "@/database/entities/user.entity";
 import { RolesName } from "src/api/base";
 import { MailService } from "@/mail/mail.service";
+import Utils from "@/utils/Utils";
 
 @Injectable()
 export class AuthService {
@@ -26,13 +28,17 @@ export class AuthService {
     private jwtService: JwtService
   ) {}
 
-  async login(loginUserDto: LoginUserDto): Promise<any> {
+  async login(lang: string, loginUserDto: LoginUserDto): Promise<any> {
     const { email, password } = loginUserDto;
     const user = await this.usersService.findByEmail(email);
+    if (user.role === RolesName.INVALID_USER) {
+      throw new ForbiddenException(Utils.t("auth.invalidTokenOrUserInactive"));
+    }
     const checkPass = await this.bcryptService.compare(password, user.password);
     if (!checkPass) {
       throw new UnauthorizedException("Password is wrong");
     }
+
     return this.generateToken(user);
   }
 

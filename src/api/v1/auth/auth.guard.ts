@@ -1,6 +1,7 @@
 import {
   CanActivate,
   ExecutionContext,
+  ForbiddenException,
   Injectable,
   UnauthorizedException,
 } from "@nestjs/common";
@@ -37,9 +38,7 @@ export class AuthGuard implements CanActivate {
       role: Not(RolesName.INVALID_USER),
     });
     if (!user) {
-      throw new UnauthorizedException(
-        Utils.t("auth.invalidTokenOrUserInactive")
-      );
+      throw new ForbiddenException(Utils.t("auth.invalidTokenOrUserInactive"));
     }
     request.user = payload;
     return true;

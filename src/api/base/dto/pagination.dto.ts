@@ -21,4 +21,6 @@ export class responsePagination {
   lastPage: number;
   nextPage?: number;
   prevPage?: number;
+  currentPage?: number;
+  perPage: number;
 }
