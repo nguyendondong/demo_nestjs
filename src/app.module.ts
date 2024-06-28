@@ -18,6 +18,7 @@ import {
   QueryResolver,
 } from "nestjs-i18n";
 import { join } from "path";
+import { AppController } from "@/app.controller";
 
 @Module({
   imports: [
@@ -64,5 +65,6 @@ import { join } from "path";
     WorkerModule,
   ],
   providers: [JwtService, BcryptService],
+  controllers: [AppController],
 })
 export class AppModule {}

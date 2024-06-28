@@ -27,7 +27,7 @@ export class BaseService {
     const name = searchDto.name || "";
     const email = searchDto.email || "";
 
-    const [entities, count] = await this.entityManager.findAndCount(entity, {
+    const [entities, total] = await this.entityManager.findAndCount(entity, {
       where: [
         {
           name: Like("%" + name + "%"),
@@ -39,7 +39,7 @@ export class BaseService {
       order: options,
     });
 
-    const lastPage = Math.ceil(count / limit);
+    const lastPage = Math.ceil(total / limit);
     const nextPage = page + 1 > lastPage ? undefined : page + 1;
     const prevPage = page - 1 < 1 ? undefined : page - 1;
     const currentPage = page;
@@ -47,7 +47,7 @@ export class BaseService {
 
     return {
       data: Helpers.transformDataEnitity(ResponseUserDto, entities),
-      count,
+      total,
       currentPage,
       lastPage,
       nextPage,

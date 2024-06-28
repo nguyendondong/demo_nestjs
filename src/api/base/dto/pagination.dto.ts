@@ -17,7 +17,7 @@ export class PaginationDto {
 
 export class responsePagination {
   data: any;
-  count: number;
+  total: number;
   lastPage: number;
   nextPage?: number;
   prevPage?: number;
