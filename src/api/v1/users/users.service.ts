@@ -63,8 +63,8 @@ export class UsersService extends BaseService {
     });
 
     const user = await this.entityManager.save(User, userData);
-    // const mailToken = await this.generateRandomToken(email, confirmationToken);
-    // await this.mailService.sendEmailConfirmation(lang, user, mailToken);
+    const mailToken = await this.generateRandomToken(email, confirmationToken);
+    await this.mailService.sendEmailConfirmation(lang, user, mailToken);
 
     return Helpers.transformDataEnitity(ResponseUserDto, user);
   }
