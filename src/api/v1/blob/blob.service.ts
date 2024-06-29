@@ -13,13 +13,15 @@ export class BlobService {
 
   async uploadFile(file: Express.Multer.File): Promise<boolean> {
     try {
-      await s3Client.send(
-        new PutObjectCommand({
-          Bucket: process.env.AWS_S3_BUCKET,
-          Key: `uploads/${file.fieldname}/${file.originalname}`,
-          Body: file.buffer,
-        })
-      );
+      if (process.env.USE_AWS_S3_BUCKET === "true") {
+        await s3Client.send(
+          new PutObjectCommand({
+            Bucket: process.env.AWS_S3_BUCKET,
+            Key: `uploads/${file.fieldname}/${file.originalname}`,
+            Body: file.buffer,
+          })
+        );
+      }
 
       return true;
     } catch (error) {

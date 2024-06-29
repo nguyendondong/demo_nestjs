@@ -36,7 +36,7 @@ export class AuthService {
     }
     const checkPass = await this.bcryptService.compare(password, user.password);
     if (!checkPass) {
-      throw new UnauthorizedException("Password is wrong");
+      throw new UnauthorizedException({ password: "Password is wrong" });
     }
 
     return this.generateToken(user);

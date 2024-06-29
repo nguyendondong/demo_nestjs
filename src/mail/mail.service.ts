@@ -29,7 +29,7 @@ export class MailService {
   }
 
   async sendUserConfirmation(lang: string, user: User, token: string) {
-    const url = `${this.configService.get<string>("APP_URL")}/api/v1/auth/confirm-email?token=${token}`;
+    const url = `${this.configService.get<string>("FRONTEND_URL")}/auth/confirm-email/${token}`;
 
     await this.mailerService.sendMail({
       to: user.email,
@@ -94,7 +94,7 @@ export class MailService {
   }
 
   async sendEmailResetPassword(lang: string, user: User, token: string) {
-    const url = `${this.configService.get<string>("APP_URL")}/api/v1/auth/reset-password?token=${token}`;
+    const url = `${this.configService.get<string>("FRONTEND_URL")}/api/v1/auth/reset-password?token=${token}`;
     await this.mailerService.sendMail({
       to: user.email,
       from: `"Support Team" <${this.configService.get<string>("MAIL_SUPPORT_TEAM")}>`, // override default from

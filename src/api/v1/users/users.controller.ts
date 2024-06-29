@@ -25,7 +25,7 @@ import {
 } from "@/api/v1/users/dto/create-user.dto";
 import { ApiBearerAuth, ApiTags } from "@nestjs/swagger";
 import { FileInterceptor } from "@nestjs/platform-express";
-import { storage } from "@/config/storage.config";
+import { multerOptions } from "@/config/storage.config";
 import { CsvService } from "@/api/v1/csv/csv.service";
 import { QueuesName, RolesName } from "@/api/base";
 import { I18nContext } from "nestjs-i18n";
@@ -54,19 +54,11 @@ export class UsersController {
   }
 
   @Patch(":id")
-  @UseInterceptors(FileInterceptor("avatar"))
+  @UseInterceptors(FileInterceptor("avatar", multerOptions))
   async update(
     @Param("id") id: number,
     @Body() updateUserDto: UpdateUserDto,
-    @UploadedFile(
-      new ParseFilePipe({
-        validators: [
-          new FileTypeValidator({
-            fileType: /(jpg|jpeg|png|gif)$/,
-          }),
-        ],
-      })
-    )
+    @UploadedFile(new ParseFilePipe())
     file: Express.Multer.File
   ) {
     return this.usersService.update(id, updateUserDto, file);
@@ -93,7 +85,7 @@ export class UsersController {
   // }
 
   @Post()
-  @UseInterceptors(FileInterceptor("userCsv", { storage }))
+  @UseInterceptors(FileInterceptor("userCsv", multerOptions))
   async create(
     @UploadedFile(
       new ParseFilePipe({

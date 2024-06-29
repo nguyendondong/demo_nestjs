@@ -9,6 +9,7 @@ export const mailConfig: MailerOptions = {
     host: configService.get<string>("MAIL_HOST"),
     port: configService.get<number>("MAIL_PORT"),
     secure: false,
+    ignoreTLS: false,
     auth: {
       user: configService.get<string>("MAIL_USER"),
       pass: configService.get<string>("MAIL_PASSWORD"),
